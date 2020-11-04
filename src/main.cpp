@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include<EEPROM.h>
+#include<SoftwareSerial.h>
 // this pin will be attached to the reed switch pin
 #define reed_switch_pin 2 
 
@@ -17,6 +18,8 @@
 #define reset_pin 3
 
 #define EEPROM_size 256
+
+SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
 
 // this variable will count the meter pulses
 // when a certain amount of water passes, the meter will send a pulse through reed switch
@@ -116,12 +119,36 @@ bool detect_wire_cut()
 
 void reset()
 {
+    // counter and total water will be reseted
+}
 
+void SendMessage(String message, String number)
+{
+  unsigned int len = number.length() + 1;
+  char Number[len];
+  number.toCharArray(Number, len);
+
+  SIM800L.println(Number);
+  SIM800L.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+  delay(1000);  // Delay of 1000 milli seconds or 1 second
+  char outString[19];
+  sprintf_P(outString, PSTR("AT+CMGS=\"%s\"\r"), Number);
+  SIM800L.println(outString);
+  delay(1000);
+  SIM800L.println(message);// The SMS text you want to send
+  delay(100);
+  SIM800L.println((char)26);// ASCII code of CTRL+Z
+  delay(1000);
 }
 
 void setup() 
 {
   Serial.begin(9600);
+  SIM800L.begin(9600);
+
+  SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
+  delay(1000);
+  Serial.write ("Will read Message");
 
   pinMode(reed_switch_pin, INPUT_PULLUP);
   pinMode(wire_cut_detect_pin, INPUT);
