@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include<EEPROM.h>
 #include<SoftwareSerial.h>
+#include"Device_Control.h"
+#include"Device_Control.cpp"
 // this pin will be attached to the reed switch pin
 #define reed_switch_pin 2 
 
@@ -21,75 +23,12 @@
 
 SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
 
+Device_Control Pro_Mini;
+
 // this variable will count the meter pulses
 // when a certain amount of water passes, the meter will send a pulse through reed switch
 unsigned long int counter = 0;
 
-
-
-
-
-// byte readByteInEEPRPOM(int address)
-// {
-//     EEPROM.begin();
-//     byte data;
-//     data = EEPROM.read(address);
-//     //Serial.println("Data: "+String(data));
-//     return data;
-// }
-
-// String readStringInEEPRPOM(int init_addr, int size)
-// {
-//     EEPROM.begin();
-//     String str;
-//     byte data;
-//     for(int i=init_addr; i<(size + init_addr); i++)
-//     {
-//         data = EEPROM.read(i);
-//         //Serial.println((char)data);
-//         str+=(char)data;
-//     }
-//     //Serial.println("String: " + str);
-//     return str;
-// }
-
-// int writeByteInEEPROM(int init_addr, byte data)
-// {
-//     EEPROM.begin();
-//     EEPROM.write(init_addr, data);
-//         if(EEPROM.commit())
-//         {
-//             Serial.println("EEPROM successfully committed");
-//         }
-//         else 
-//         {
-//             Serial.println("ERROR! EEPROM commit failed");
-//             return -1;
-//         }
-//     return ++init_addr; //new address
-// }
-
-// int writeStringInEEPROM(int init_addr, int size, String data)
-// {
-//     EEPROM.begin(EEPROM_size);
-//     int i, j=0;
-//     //Serial.println("size"+String(size));
-//     for(i = init_addr; i<(size + init_addr); i++,j++)
-//     {
-//         EEPROM.write(i, data[j]);
-//         //Serial.println(data[j]);
-//         if(EEPROM.commit())
-//         {
-//             Serial.println("EEPROM successfully committed");
-//         }
-//         else 
-//         {
-//             Serial.println("ERROR! EEPROM commit failed");
-//             return -1;
-//         }
-//     }
-//     return i; //new address
-// }
 
 void pulse_counter()
 {
@@ -156,12 +95,12 @@ void setup()
 
   attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
   attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
-  
+
 }
 
 void loop() 
 {
-    bool was_wire_cut = detect_wire_cut();
-    delay(500);
-    Serial.println(counter);
+    // bool was_wire_cut = detect_wire_cut();
+    // delay(500);
+    // Serial.println(counter);
 }
