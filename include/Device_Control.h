@@ -14,8 +14,7 @@ public:
     unsigned long Initial_Water_Flow;
 
     uint8_t ID_start_address = 0;
-    uint8_t ID_length_address = 1;
-    uint8_t Contacts_start_address = 2;
+    uint8_t Contacts_start_address = 1;
     uint8_t Number_of_saved_contacts_address = Contacts_start_address + Max_Number_of_Contacts*11;
     uint8_t Water_Flow_start_address = Number_of_saved_contacts_address + 1;
 
