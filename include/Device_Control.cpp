@@ -33,6 +33,14 @@ bool Device_Control::check_Contact(String number)//checks whether a contact exis
 {
     int number_of_saved_contacts = this->readByteInEEPROM(Number_of_saved_contacts_address);
     //Foysal will complete it
+    for(int i = Contacts_start_address; i < number_of_saved_contacts*11; i+=11)
+    {
+        if(number == this->readStringInEEPROM(i,11))
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void Device_Control::writeByteInEEPROM(int address, byte data)
