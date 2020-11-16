@@ -97,22 +97,26 @@ void setup()
 
     delay(1000);
 
-    Pro_Mini.get_ID("2020150001");
+    //Pro_Mini.put_ID("2020150001");
+    // String id = Pro_Mini.ID;
+    // Serial.println(id);
     Pro_Mini.show_ID();
 
-    //Pro_Mini.get_Water_per_Pulse(100);
+    //Pro_Mini.put_Water_per_Pulse(100);
     Pro_Mini.show_Water_per_Pulse();
 
-    // if(Pro_Mini.get_Contact("01624593436"))
-    //     Pro_Mini.show_All_Contacts();
+    Pro_Mini.put_Contact("01624593436");
+    Pro_Mini.put_Contact("01689294634");
+    Pro_Mini.put_Contact("01312593436");
+    Pro_Mini.show_All_Contacts();
+    Pro_Mini.replace_Contact("01789294634", 1);
+    Pro_Mini.show_All_Contacts();
 
-    // Pro_Mini.get_Contact("01312593436");
-    // Pro_Mini.show_All_Contacts();
+    Pro_Mini.put_Initial_Water_Flow(2297);
+    Pro_Mini.show_Initial_Water_Flow();
 
-    // Pro_Mini.get_Contact("01689294634");
-    // Pro_Mini.show_All_Contacts();
-
-    // Pro_Mini.show_Contact(2);
+    Pro_Mini.put_Water_per_Pulse(10);
+    Pro_Mini.show_Water_per_Pulse();
 
 
 }
