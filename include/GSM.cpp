@@ -40,4 +40,5 @@ String GSM::ReceiveMessage()
         delay(100);
         SIM800L.println("Received message = %s\r",textMessage);
     }
+    return textMessage;
 }
