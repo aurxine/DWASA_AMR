@@ -19,7 +19,6 @@
 // this pin will be used for hardware reset
 #define reset_pin 3
 
-#define EEPROM_size 256
 
 SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
 
@@ -61,21 +60,46 @@ void reset()
     // counter and total water will be reseted
 }
 
+
 void setup() 
 {
-  Serial.begin(9600);
-  SIM800L.begin(9600);
+    Serial.begin(9600);
+    SIM800L.begin(9600);
 
-  SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
-  delay(1000);
-  Serial.write ("Will read Message");
+    SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
+    delay(1000);
+    //Serial.write ("Will read Message");
 
-  pinMode(reed_switch_pin, INPUT_PULLUP);
-  pinMode(wire_cut_detect_pin, INPUT);
-  pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(wire_cut_detect_pin, INPUT);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
 
-  attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
-  attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
+    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
+
+    delay(1000);
+
+    //Pro_Mini.put_ID("2020150001");
+    // String id = Pro_Mini.ID;
+    // Serial.println(id);
+    Pro_Mini.show_ID();
+
+    //Pro_Mini.put_Water_per_Pulse(100);
+    Pro_Mini.show_Water_per_Pulse();
+
+    Pro_Mini.put_Contact("01624593436");
+    Pro_Mini.put_Contact("01689294634");
+    Pro_Mini.put_Contact("01312593436");
+    Pro_Mini.show_All_Contacts();
+    Pro_Mini.replace_Contact("01789294634", 1);
+    Pro_Mini.show_All_Contacts();
+
+    Pro_Mini.put_Initial_Water_Flow(2297);
+    Pro_Mini.show_Initial_Water_Flow();
+
+    Pro_Mini.put_Water_per_Pulse(10);
+    Pro_Mini.show_Water_per_Pulse();
+
 
 }
 
