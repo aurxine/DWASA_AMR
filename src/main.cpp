@@ -19,7 +19,6 @@
 // this pin will be used for hardware reset
 #define reset_pin 3
 
-#define EEPROM_size 256
 
 SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
 
@@ -63,38 +62,58 @@ void reset()
 
 void SendMessage(String message, String number)
 {
-  unsigned int len = number.length() + 1;
-  char Number[len];
-  number.toCharArray(Number, len);
+    unsigned int len = number.length() + 1;
+    char Number[len];
+    number.toCharArray(Number, len);
 
-  SIM800L.println(Number);
-  SIM800L.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
-  delay(1000);  // Delay of 1000 milli seconds or 1 second
-  char outString[19];
-  sprintf_P(outString, PSTR("AT+CMGS=\"%s\"\r"), Number);
-  SIM800L.println(outString);
-  delay(1000);
-  SIM800L.println(message);// The SMS text you want to send
-  delay(100);
-  SIM800L.println((char)26);// ASCII code of CTRL+Z
-  delay(1000);
+    SIM800L.println(Number);
+    SIM800L.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+    delay(1000);  // Delay of 1000 milli seconds or 1 second
+    char outString[19];
+    sprintf_P(outString, PSTR("AT+CMGS=\"%s\"\r"), Number);
+    SIM800L.println(outString);
+    delay(1000);
+    SIM800L.println(message);// The SMS text you want to send
+    delay(100);
+    SIM800L.println((char)26);// ASCII code of CTRL+Z
+    delay(1000);
 }
 
 void setup() 
 {
-  Serial.begin(9600);
-  SIM800L.begin(9600);
+    Serial.begin(9600);
+    SIM800L.begin(9600);
 
-  SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
-  delay(1000);
-  Serial.write ("Will read Message");
+    SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
+    delay(1000);
+    //Serial.write ("Will read Message");
 
-  pinMode(reed_switch_pin, INPUT_PULLUP);
-  pinMode(wire_cut_detect_pin, INPUT);
-  pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(wire_cut_detect_pin, INPUT);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
 
-  attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
-  attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
+    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
+
+    delay(1000);
+
+    Pro_Mini.get_ID("2020150001");
+    Pro_Mini.show_ID();
+
+    //Pro_Mini.get_Water_per_Pulse(100);
+    Pro_Mini.show_Water_per_Pulse();
+
+    // if(Pro_Mini.get_Contact("01624593436"))
+    //     Pro_Mini.show_All_Contacts();
+
+    // Pro_Mini.get_Contact("01312593436");
+    // Pro_Mini.show_All_Contacts();
+
+    // Pro_Mini.get_Contact("01689294634");
+    // Pro_Mini.show_All_Contacts();
+
+    // Pro_Mini.show_Contact(2);
+
 
 }
 
