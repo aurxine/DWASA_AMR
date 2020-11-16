@@ -10,7 +10,9 @@ private:
     uint8_t Tx_Pin;
     SoftwareSerial SIM800L;
 public:
-    GSM(uint8_t rx_pin, uint8_t tx_pin);
+    GSM(uint8_t rx_pin, uint8_t tx_pin);  
+    void SendMessage(String message, String number);
+    String ReceiveMessage();
     // ~GSM();
 };
 
