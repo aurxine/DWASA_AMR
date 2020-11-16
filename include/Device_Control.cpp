@@ -94,8 +94,8 @@ void Device_Control::replace_Contact(String number, int position)//replace a con
 bool Device_Control::check_Contact(String number)//checks whether a contact exists or not
 {
     int number_of_saved_contacts = this->readByteInEEPROM(Number_of_saved_contacts_address);
-    //Foysal will complete it
-    for(int i = Contacts_start_address; i < number_of_saved_contacts*11; i+=11)
+    
+    for(int i = Contacts_start_address; i < Contacts_start_address + number_of_saved_contacts*11; i+=11)
     {
         if(number == this->readStringInEEPROM(i,11))
         {
