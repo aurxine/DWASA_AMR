@@ -17,7 +17,7 @@
 #define wire_cut_detect_pin A0
 
 // this pin will be used for hardware reset
-#define reset_pin 3
+#define reset_pin 4
 
 
 SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
