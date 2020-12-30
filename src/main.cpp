@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include<EEPROM.h>
 #include<SoftwareSerial.h>
+#include"Device_Control.h"
+//#include"Device_Control.cpp"
 // this pin will be attached to the reed switch pin
 #define reed_switch_pin 2 
 
@@ -17,79 +19,15 @@
 // this pin will be used for hardware reset
 #define reset_pin 3
 
-#define EEPROM_size 256
 
 SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
+
+Device_Control Pro_Mini;
 
 // this variable will count the meter pulses
 // when a certain amount of water passes, the meter will send a pulse through reed switch
 unsigned long int counter = 0;
 
-
-
-
-
-// byte readByteInEEPRPOM(int address)
-// {
-//     EEPROM.begin();
-//     byte data;
-//     data = EEPROM.read(address);
-//     //Serial.println("Data: "+String(data));
-//     return data;
-// }
-
-// String readStringInEEPRPOM(int init_addr, int size)
-// {
-//     EEPROM.begin();
-//     String str;
-//     byte data;
-//     for(int i=init_addr; i<(size + init_addr); i++)
-//     {
-//         data = EEPROM.read(i);
-//         //Serial.println((char)data);
-//         str+=(char)data;
-//     }
-//     //Serial.println("String: " + str);
-//     return str;
-// }
-
-// int writeByteInEEPROM(int init_addr, byte data)
-// {
-//     EEPROM.begin();
-//     EEPROM.write(init_addr, data);
-//         if(EEPROM.commit())
-//         {
-//             Serial.println("EEPROM successfully committed");
-//         }
-//         else 
-//         {
-//             Serial.println("ERROR! EEPROM commit failed");
-//             return -1;
-//         }
-//     return ++init_addr; //new address
-// }
-
-// int writeStringInEEPROM(int init_addr, int size, String data)
-// {
-//     EEPROM.begin(EEPROM_size);
-//     int i, j=0;
-//     //Serial.println("size"+String(size));
-//     for(i = init_addr; i<(size + init_addr); i++,j++)
-//     {
-//         EEPROM.write(i, data[j]);
-//         //Serial.println(data[j]);
-//         if(EEPROM.commit())
-//         {
-//             Serial.println("EEPROM successfully committed");
-//         }
-//         else 
-//         {
-//             Serial.println("ERROR! EEPROM commit failed");
-//             return -1;
-//         }
-//     }
-//     return i; //new address
-// }
 
 void pulse_counter()
 {
@@ -122,46 +60,52 @@ void reset()
     // counter and total water will be reseted
 }
 
-void SendMessage(String message, String number)
-{
-  unsigned int len = number.length() + 1;
-  char Number[len];
-  number.toCharArray(Number, len);
-
-  SIM800L.println(Number);
-  SIM800L.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
-  delay(1000);  // Delay of 1000 milli seconds or 1 second
-  char outString[19];
-  sprintf_P(outString, PSTR("AT+CMGS=\"%s\"\r"), Number);
-  SIM800L.println(outString);
-  delay(1000);
-  SIM800L.println(message);// The SMS text you want to send
-  delay(100);
-  SIM800L.println((char)26);// ASCII code of CTRL+Z
-  delay(1000);
-}
 
 void setup() 
 {
-  Serial.begin(9600);
-  SIM800L.begin(9600);
+    Serial.begin(9600);
+    SIM800L.begin(9600);
 
-  SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
-  delay(1000);
-  Serial.write ("Will read Message");
+    SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
+    delay(1000);
+    //Serial.write ("Will read Message");
 
-  pinMode(reed_switch_pin, INPUT_PULLUP);
-  pinMode(wire_cut_detect_pin, INPUT);
-  pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(wire_cut_detect_pin, INPUT);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
 
-  attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
-  attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
-  
+    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
+
+    delay(1000);
+
+    //Pro_Mini.put_ID("2020150001");
+    // String id = Pro_Mini.ID;
+    // Serial.println(id);
+    Pro_Mini.show_ID();
+
+    //Pro_Mini.put_Water_per_Pulse(100);
+    Pro_Mini.show_Water_per_Pulse();
+
+    Pro_Mini.put_Contact("01624593436");
+    Pro_Mini.put_Contact("01689294634");
+    Pro_Mini.put_Contact("01312593436");
+    Pro_Mini.show_All_Contacts();
+    Pro_Mini.replace_Contact("01789294634", 1);
+    Pro_Mini.show_All_Contacts();
+
+    Pro_Mini.put_Initial_Water_Flow(2297);
+    Pro_Mini.show_Initial_Water_Flow();
+
+    Pro_Mini.put_Water_per_Pulse(10);
+    Pro_Mini.show_Water_per_Pulse();
+
+
 }
 
 void loop() 
 {
-    bool was_wire_cut = detect_wire_cut();
-    delay(500);
-    Serial.println(counter);
+    // bool was_wire_cut = detect_wire_cut();
+    // delay(500);
+    // Serial.println(counter);
 }
