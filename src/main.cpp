@@ -2,7 +2,7 @@
 #include<EEPROM.h>
 #include<SoftwareSerial.h>
 #include"Device_Control.h"
-#include"Device_Control.cpp"
+//#include"Device_Control.cpp"
 // this pin will be attached to the reed switch pin
 #define reed_switch_pin 2 
 
