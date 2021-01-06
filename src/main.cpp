@@ -43,21 +43,26 @@ void pulse_counter()
   
 }
 
-bool detect_wire_cut()
-{
-    int check_wire_voltage = analogRead(wire_cut_detect_pin);
-    //Serial.println(check_wire_voltage);
-    if(check_wire_voltage < 1000)
-    {
-        //Serial.println("Wire is cut");
-        return true;
-    }
-    return false;
-}
+// bool detect_wire_cut()
+// {
+//     int check_wire_voltage = analogRead(wire_cut_detect_pin);
+//     //Serial.println(check_wire_voltage);
+//     if(check_wire_voltage < 1000)
+//     {
+//         //Serial.println("Wire is cut");
+//         return true;
+//     }
+//     return false;
+// }
 
 void reset()
 {
     // counter and total water will be reseted
+}
+
+void wirecut()
+{
+    Serial.println("Wire cut");
 }
 
 
