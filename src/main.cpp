@@ -2,7 +2,7 @@
 #include<EEPROM.h>
 #include<SoftwareSerial.h>
 #include"Device_Control.h"
-#include"Device_Control.cpp"
+//#include"Device_Control.cpp"
 // this pin will be attached to the reed switch pin
 #define reed_switch_pin 2 
 
@@ -91,14 +91,24 @@ void setup()
     Pro_Mini.put_Contact("01689294634");
     Pro_Mini.put_Contact("01312593436");
     Pro_Mini.show_All_Contacts();
-    Pro_Mini.replace_Contact("01789294634", 1);
-    Pro_Mini.show_All_Contacts();
 
-    Pro_Mini.put_Initial_Water_Flow(2297);
-    Pro_Mini.show_Initial_Water_Flow();
+    Serial.println();
 
-    Pro_Mini.put_Water_per_Pulse(10);
-    Pro_Mini.show_Water_per_Pulse();
+    if(Pro_Mini.check_Contact("01324593436"))
+    {
+        Serial.println("Contact Available");
+    }
+    else
+    {
+        Serial.println("Contact not available");
+    }
+    
+
+    // Pro_Mini.put_Initial_Water_Flow(2297);
+    // Pro_Mini.show_Initial_Water_Flow();
+
+    // Pro_Mini.put_Water_per_Pulse(10);
+    // Pro_Mini.show_Water_per_Pulse();
 
 
 }
