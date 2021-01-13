@@ -26,20 +26,45 @@ void GSM::SendMessage(String message, String number)
     delay(1000);
 }
 
-String GSM::ReceiveMessage()
+SString GSM::ReceiveMessage()
 {
     String textMessage = "";
 
-    SIM800L.print("AT+CMGF=1\r");
-    delay(1000);
-    SIM800L.println("AT+CNMI=2,2,0,0,0\r");  
+    //SIM800L.print("AT+CMGF=1\r");
+    //delay(1000);
+    SIM800L.println("AT+CNMI=1,1,0,0,0\r");  
     delay(2000);
 
+    SIM800L.println("AT+CMGL=\"REC UNREAD\"\r"); // to get the unread message
+    //SIM800L.println("AT+CMGR=3\r"); // to get the message stored at location 3
     if(SIM800L.available() > 0)
     {
         textMessage = SIM800L.readString();
-        delay(100);
-        Serial.println("Received message = %s\r" + textMessage);
+        delay(500);
+        
     }
-    return textMessage;
+
+    SString msg;
+    String temp;
+    String data = textMessage;
+    int len = data.length(), cnt = 0;
+    
+    for(int i = 0; i < len;i++)
+    {
+        //Serial.println(data.substring(i,i+1));
+        temp = data.substring(i,i+1);
+        if (temp == "+" && i < len-1)
+        {
+        if(data.substring(i+1,i+2) == "8")
+            msg.number = data.substring(i,i+13);
+        }
+
+        if(temp == "\"")
+        {
+        cnt = i;       
+        }
+            
+    }
+    msg.text = (data.substring(cnt+3));
+    return msg;
 }
