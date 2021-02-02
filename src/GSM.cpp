@@ -2,11 +2,20 @@
 #include<Arduino.h>
 
 GSM::GSM(uint8_t rx, uint8_t tx): SIM800L(rx, tx)
-{
+{   
     Rx_Pin = rx;
     Tx_Pin = tx;
 }
 
+void GSM::delAllMessage()
+{
+    SIM800L.print("AT+CMGD=1,4\n\r");
+}
+
+void GSM::begin(int braudrate)
+{
+    SIM800L.begin(braudrate);
+}
 void GSM::SendMessage(String message, String number)
 {
     unsigned int len = number.length() + 1;
@@ -30,13 +39,13 @@ SString GSM::ReceiveMessage()
 {
     String textMessage = "";
 
-    //SIM800L.print("AT+CMGF=1\r");
-    //delay(1000);
-    SIM800L.println("AT+CNMI=1,1,0,0,0\r");  
+    SIM800L.print("AT+CMGF=1\r");
+    delay(1000);
+    SIM800L.println("AT+CNMI=2,2,0,0,0\r");  
     delay(2000);
 
     SIM800L.println("AT+CMGL=\"REC UNREAD\"\r"); // to get the unread message
-    //SIM800L.println("AT+CMGR=3\r"); // to get the message stored at location 3
+    //SIM800L.println("AT+CMGR=0\r"); // to get the message stored at location 3
     if(SIM800L.available() > 0)
     {
         textMessage = SIM800L.readString();
@@ -45,10 +54,12 @@ SString GSM::ReceiveMessage()
     }
 
     SString msg;
+    msg.text = "f";
+    msg.number = "f";
     String temp;
     String data = textMessage;
     int len = data.length(), cnt = 0;
-    
+    Serial.println(textMessage); // For debugging purposes
     for(int i = 0; i < len;i++)
     {
         //Serial.println(data.substring(i,i+1));
@@ -56,7 +67,7 @@ SString GSM::ReceiveMessage()
         if (temp == "+" && i < len-1)
         {
         if(data.substring(i+1,i+2) == "8")
-            msg.number = data.substring(i,i+13);
+            msg.number += data.substring(i,i+13);
         }
 
         if(temp == "\"")
@@ -65,6 +76,7 @@ SString GSM::ReceiveMessage()
         }
             
     }
-    msg.text = (data.substring(cnt+3));
+    msg.text += (data.substring(cnt+3));
+    Serial.println(msg.text); // For debugging purposes
     return msg;
 }
