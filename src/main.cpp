@@ -103,7 +103,7 @@ void setup()
     Pro_Mini.show_All_Contacts();
 
     Serial.println();
-    // Changing line
+    /*/ Changing line
     info_type info;
     info.number1 = "01521327794";
     EEPROM.put(0, info);
@@ -114,7 +114,7 @@ void setup()
     read_info = EEPROM.get(0, info);
     Serial.println(read_info.number1);
 
-    // Changing line end
+    // Changing line end */
     if(Pro_Mini.check_Contact("01324593436"))
     {
         Serial.println("Contact Available");

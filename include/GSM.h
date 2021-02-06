@@ -4,10 +4,10 @@
 #include<SoftwareSerial.h>
 #include<EEPROM.h>
 
-typedef struct SString{
+typedef struct Double_String{
   String number;
   String text;
-};
+}SString;
 
 
 class GSM
