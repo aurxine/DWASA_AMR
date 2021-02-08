@@ -129,6 +129,7 @@ void setup()
     msg = SIM.ReceiveMessage();
     Serial.println(msg.text);
     Serial.println(msg.number);
+    //SIM.delAllMessage();
     Serial.println("End");
     // Pro_Mini.put_Initial_Water_Flow(2297);
     // Pro_Mini.show_Initial_Water_Flow();
