@@ -52,6 +52,7 @@ uint64_t to_unsigned_long(uint8_t* arr)
 Device_Control::Device_Control(/* args */)
 {
     this->Device_Info.Number_of_Saved_Contacts = 0;
+    this->Device_Info.ID = "";
 }
 
 void Device_Control::put_ID(String ID)// receives and saves an ID
