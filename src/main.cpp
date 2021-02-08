@@ -90,7 +90,7 @@ void setup()
     delay(1000);
 
     Pro_Mini.put_ID("2020150001");
-    // String id = Pro_Mini.ID;
+    // String id = Pro_Mini.DevID;
     // Serial.println(id);
     Pro_Mini.show_ID();
 
@@ -129,13 +129,13 @@ void setup()
     msg = SIM.ReceiveMessage();
     Serial.println(msg.text);
     Serial.println(msg.number);
-    //SIM.delAllMessage();
+    SIM.delAllMessage();
     Serial.println("End");
-    // Pro_Mini.put_Initial_Water_Flow(2297);
-    // Pro_Mini.show_Initial_Water_Flow();
+    Pro_Mini.put_Initial_Water_Flow(2297);
+    Pro_Mini.show_Initial_Water_Flow();
 
-    // Pro_Mini.put_Water_per_Pulse(10);
-    // Pro_Mini.show_Water_per_Pulse();
+    Pro_Mini.put_Water_per_Pulse(10);
+    Pro_Mini.show_Water_per_Pulse();
 
 
 }
@@ -145,4 +145,26 @@ void loop()
     // bool was_wire_cut = detect_wire_cut();
     // delay(500);
     // Serial.println(counter);
+    
+    SString msg;
+    msg = SIM.ReceiveMessage();
+    Serial.println(msg.text);
+    Serial.println(msg.number);
+    Serial.println("AFTER msg.text");
+    delay(1500);
+    /*
+    if(msg.text.length()>1)
+    {
+        if(msg.text == "fQWFL")
+        {
+            String value = String(Pro_Mini.Device_Info.Water_Flow);
+            SIM.SendMessage(value, msg.number);
+            msg.text = "";
+        }
+        //SIM.delAllMessage();
+    }
+    
+    delay(5000);*/
+    
+    
 }
