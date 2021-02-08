@@ -15,6 +15,9 @@ void GSM::delAllMessage()
 void GSM::begin(int braudrate)
 {
     SIM800L.begin(braudrate);
+    delay(1000);
+    SIM800L.println("AT+CNMI=2,2,0,0,0\r");  
+    delay(2000);
 }
 void GSM::SendMessage(String message, String number)
 {
@@ -39,12 +42,11 @@ SString GSM::ReceiveMessage()
 {
     String textMessage = "";
 
-    SIM800L.print("AT+CMGF=1\r");
-    delay(1000);
-    SIM800L.println("AT+CNMI=2,2,0,0,0\r");  
-    delay(2000);
+    //SIM800L.print("AT+CMGF=1\r");
+    //delay(1000);
+    
 
-    SIM800L.println("AT+CMGL=\"REC UNREAD\"\r"); // to get the unread message
+    SIM800L.println("AT+CMGL=\"REC ALL\"\r"); // to get the unread message
     //SIM800L.println("AT+CMGR=0\r"); // to get the message stored at location 3
     if(SIM800L.available() > 0)
     {
@@ -59,7 +61,7 @@ SString GSM::ReceiveMessage()
     String temp;
     String data = textMessage;
     int len = data.length(), cnt = 0;
-    Serial.println(textMessage); // For debugging purposes
+    Serial.println(len); // For debugging purposes
     for(int i = 0; i < len;i++)
     {
         //Serial.println(data.substring(i,i+1));

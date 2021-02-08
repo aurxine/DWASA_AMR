@@ -31,9 +31,9 @@ unsigned long int counter = 0;
 
 // Changing line
 
-typedef struct info_type{
+typedef struct info_type_struct{
     String number1;
-};
+}info_type;
 
 
 
@@ -89,7 +89,7 @@ void setup()
 
     delay(1000);
 
-    //Pro_Mini.put_ID("2020150001");
+    Pro_Mini.put_ID("2020150001");
     // String id = Pro_Mini.ID;
     // Serial.println(id);
     Pro_Mini.show_ID();
@@ -103,6 +103,7 @@ void setup()
     Pro_Mini.show_All_Contacts();
 
     Serial.println();
+    Serial.println(Pro_Mini.Device_Info.Contacts[0]);
     /*/ Changing line
     info_type info;
     info.number1 = "01521327794";
@@ -123,7 +124,7 @@ void setup()
     {
         Serial.println("Contact not available");
     }
-
+    
     SString msg;
     msg = SIM.ReceiveMessage();
     Serial.println(msg.text);

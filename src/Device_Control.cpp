@@ -67,6 +67,7 @@ void Device_Control::put_ID(String ID)// receives and saves an ID
 void Device_Control::show_ID()//Serial prints ID
 {
     this->Device_Info = EEPROM.get(0,this->Device_Info);
+    Serial.print("Device ID ");
     Serial.println(this->Device_Info.ID);
     /*
     this->ID = readStringInEEPROM(ID_start_address, ID_Length);
