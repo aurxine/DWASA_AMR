@@ -3,6 +3,13 @@
 #include<Arduino.h>
 #include<SoftwareSerial.h>
 #include<EEPROM.h>
+
+typedef struct Double_String{
+  String number;
+  String text;
+}SString;
+
+
 class GSM
 {
 private:
@@ -12,7 +19,9 @@ private:
 public:
     GSM(uint8_t rx_pin, uint8_t tx_pin);  
     void SendMessage(String message, String number);
-    String ReceiveMessage();
+    SString ReceiveMessage();
+    void begin(int braudrate);
+    void delAllMessage();
     // ~GSM();
 };
 

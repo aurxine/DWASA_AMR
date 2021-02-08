@@ -5,9 +5,22 @@
 #define Max_Number_of_Contacts 5
 #define ID_Length 10
 
+typedef struct Device_Info_Structure
+{
+    String ID;
+    String Contacts[Max_Number_of_Contacts];
+    uint8_t Number_of_Saved_Contacts;
+    unsigned long Water_Flow;
+    unsigned long Initial_Water_Flow;
+    int Water_per_Pulse;
+
+}Device_Info_Type;
+
 class Device_Control
 {
 public:
+
+    /* Deprecating those below variables for using Device_Info_Type
     String ID;
     String Contacts[Max_Number_of_Contacts];
     unsigned long Water_Flow;
@@ -19,8 +32,10 @@ public:
     uint8_t Contacts_start_address = Number_of_saved_contacts_address + Max_Number_of_Contacts*11;
     uint8_t Water_per_Pulse_start_address = Contacts_start_address + 1;
     uint8_t Water_Flow_start_address = Water_per_Pulse_start_address + 1;
+    */
 
     Device_Control(/* args */);
+    Device_Info_Type Device_Info;
     void put_ID(String ID);// receives and saves an ID
     void show_ID();//Serial prints ID
     String device_ID();//returns ID
