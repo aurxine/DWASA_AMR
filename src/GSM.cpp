@@ -49,8 +49,8 @@ SString GSM::ReceiveMessage()
     //SIM800L.print("AT+CMGF=1\r");
     //delay(1000);
 
-    SIM800L.println("AT+CMGL=\"REC UNREAD\"\r"); // to get the unread message
-    //SIM800L.println("AT+CMGR=1\r"); // to get the message stored at location 3
+    //SIM800L.println("AT+CMGL=\"REC UNREAD\"\r"); // to get the unread message
+    SIM800L.println("AT+CMGR=1\r"); // to get the message stored at location 3
     if(SIM800L.available() > 0)
     {
         Serial.println("Got it");
@@ -65,7 +65,7 @@ SString GSM::ReceiveMessage()
     String temp;
     String data = textMessage;
     int len = data.length(), cnt = 0;
-    Serial.println(textMessage); // For debugging purposes
+    //Serial.println(textMessage); // For debugging purposes
     for(int i = 0; i < len;i++)
     {
         //Serial.println(data.substring(i,i+1));
@@ -73,7 +73,7 @@ SString GSM::ReceiveMessage()
         if (temp == "+" && i < len-1)
         {
         if(data.substring(i+1,i+2) == "8")
-            msg.number += data.substring(i,i+13);
+            msg.number += data.substring(i+3,i+14);
         }
 
         if(temp == "\"")
@@ -83,7 +83,7 @@ SString GSM::ReceiveMessage()
             
     }
     msg.text += (data.substring(cnt+3));
-    Serial.println(msg.text); // For debugging purposes
+    //Serial.println(msg.text); // For debugging purposes
     //Serial.println(msg.number);
     return msg;
 }

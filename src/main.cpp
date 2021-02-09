@@ -129,7 +129,7 @@ void setup()
     msg = SIM.ReceiveMessage();
     Serial.println(msg.text);
     Serial.println(msg.number);
-    SIM.delAllMessage();
+    //SIM.delAllMessage();
     Serial.println("End");
     Pro_Mini.put_Initial_Water_Flow(2297);
     Pro_Mini.show_Initial_Water_Flow();
@@ -148,8 +148,9 @@ void loop()
     
     SString msg;
     msg = SIM.ReceiveMessage();
-    Serial.println(msg.text);
-    Serial.println(msg.number);
+    msg.number = msg.number.substring(0,11);
+    Serial.println("Text "+msg.text);
+    Serial.println("Number "+msg.number);
     Serial.println("AFTER msg.text");
     delay(1500);
     /*
@@ -163,8 +164,8 @@ void loop()
         }
         //SIM.delAllMessage();
     }
-    
-    delay(5000);*/
+    */
+    delay(5000);
     
     
 }
