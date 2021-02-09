@@ -17,7 +17,11 @@ void GSM::begin(int braudrate)
 {
     String textMessage = "";
     SIM800L.begin(braudrate);
-    delay(1000);
+    delay(500);
+    // SIM800L.setTimeout(3000);
+    SIM800L.println("AT+IPR=9600");
+    delay(500);
+    // delay(1000);
     SIM800L.println("AT+CMGF=1");
     delay(1000);
     SIM800L.println("AT+CNMI=1,2,0,0,0");  
@@ -52,7 +56,8 @@ SString GSM::ReceiveMessage()
     if(SIM800L.available() > 0)
     {
         textMessage = SIM800L.readString();
-        delay(500);
+        Serial.println(textMessage);
+        delay(1000);
         // Serial.println(textMessage);
     }
     // Serial.println(textMessage);
