@@ -9,6 +9,7 @@ typedef struct Device_Info_Structure
 {
     bool Manufacturing;
     bool Configuration;
+    String Password;
     String ID;
     String Contacts[Max_Number_of_Contacts];
     uint8_t Number_of_Saved_Contacts;
@@ -38,6 +39,7 @@ public:
 
     Device_Control(/* args */);
     Device_Info_Type Device_Info;
+    void put_Password(String pass); // receives and saves Password
     void put_ID(String ID);// receives and saves an ID
     void show_ID();//Serial prints ID
     String device_ID();//returns ID
