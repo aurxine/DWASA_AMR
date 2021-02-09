@@ -52,6 +52,7 @@ uint64_t to_unsigned_long(uint8_t* arr)
 Device_Control::Device_Control(/* args */)
 {
     this->Device_Info.Number_of_Saved_Contacts = 0;
+    // this->Device_Info.ID = "";
 }
 
 void Device_Control::put_ID(String ID)// receives and saves an ID
@@ -78,7 +79,7 @@ void Device_Control::show_ID()//Serial prints ID
 
 String Device_Control::device_ID()
 {
-    this->Device_Info = EEPROM.get(0, this->Device_Info);
+    EEPROM.get(0, this->Device_Info);
     return this->Device_Info.ID;
     /*
     this->ID = readStringInEEPROM(ID_start_address, ID_Length);
@@ -280,6 +281,16 @@ void Device_Control::save_Water_Flow(unsigned long water_flow)// save stotal wat
         this->writeByteInEEPROM(Water_Flow_start_address + i, arr[i]);
     }
     */
+}
+
+void Device_Control::Update_EEPROM()
+{
+    EEPROM.put(0, this->Device_Info);
+}
+
+void Device_Control::Get_EEPROM()
+{
+    EEPROM.get(0, this->Device_Info);
 }
 
 void Device_Control::writeByteInEEPROM(int address, byte data)

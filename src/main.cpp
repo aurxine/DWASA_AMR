@@ -20,6 +20,9 @@
 // this pin will be used for hardware reset
 #define reset_pin 3
 
+// This will be used for indication of different states
+#define indicator_LED 7
+
 
 //SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
 GSM SIM(8,9);
@@ -70,6 +73,56 @@ void reset()
 }
 
 
+void Blink_LED(int number_of_times, int Delay)
+{
+    if(number_of_times == 0 && Delay != 0)
+    {
+        digitalWrite(indicator_LED, LOW);
+    }
+
+    else if(Delay == 0)
+    {
+        digitalWrite(indicator_LED, HIGH);
+    }
+
+    else if( number_of_times != 0 && Delay != 0)
+    {
+        for(int i = 0; i < number_of_times; i++)
+        {
+            digitalWrite(indicator_LED, HIGH);
+            delay(Delay);
+            digitalWrite(indicator_LED, LOW);
+            delay(Delay);
+        }
+    }
+    
+}
+
+bool Get_ID()
+{
+    String id;
+    Serial.println("ready");
+    delay(500);
+    id = Serial.readString();
+    delay(500);
+    
+    int id_length = id.length();
+
+    if(id_length != 16)
+    {
+        // Serial.println("Unsuccessful");
+        return false;
+    }
+
+    else
+    {
+        Serial.println("successful");
+        Pro_Mini.put_ID(id);
+        return true;
+    }
+}
+
+
 void setup() 
 {
     Serial.begin(9600);
@@ -78,18 +131,49 @@ void setup()
     //SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
     SIM.begin(9600);
     delay(1000);
+
+    
     //Serial.write ("Will read Message");
 
     pinMode(reed_switch_pin, INPUT_PULLUP);
     pinMode(wire_cut_detect_pin, INPUT);
     pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(indicator_LED, OUTPUT);
 
     attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
     attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
 
     delay(1000);
+    
+    Blink_LED(1, 0);
 
-    Pro_Mini.put_ID("2020150001");
+    // Pro_Mini.Device_Info.Manufacturing = true;
+    // Pro_Mini.Device_Info.Configuration = true;
+    // Pro_Mini.Update_EEPROM();
+    Pro_Mini.Get_EEPROM();
+    // Serial.println(Pro_Mini.Device_Info.Manufacturing);
+    // Serial.println(Pro_Mini.Device_Info.Configuration);
+
+    while (Pro_Mini.Device_Info.Manufacturing)
+    {
+        // Serial.println("in the while");
+        // Blink_LED(2, 100);
+        if(Get_ID())
+        {
+            break;
+        }
+        // Blink_LED(1, 0);
+    }
+    Pro_Mini.Device_Info.Manufacturing = false;
+    Pro_Mini.Update_EEPROM();
+    Blink_LED(5, 150);
+
+    while (Pro_Mini.Device_Info.Configuration)
+    {
+        // stays here till control numbers are set
+    }
+    
+    // Pro_Mini.put_ID("2020150001");
     // String id = Pro_Mini.ID;
     // Serial.println(id);
     Pro_Mini.show_ID();
