@@ -149,23 +149,21 @@ void loop()
     SString msg;
     msg = SIM.ReceiveMessage();
     msg.number = msg.number.substring(0,11);
-    Serial.print("Text "+msg.text);
+    Serial.println("Text "+msg.text);
     Serial.println("Number "+msg.number);
-    Serial.println("AFTER msg.text");
+    Serial.println("############");
     delay(1500);
-    /*
+    
     if(msg.text.length()>1)
     {
-        if(msg.text == "fQWFL")
+        if(msg.text == "QWFL")
         {
             String value = String(Pro_Mini.Device_Info.Water_Flow);
             SIM.SendMessage(value, msg.number);
+            Serial.println("Message Replied");
             msg.text = "";
         }
-        //SIM.delAllMessage();
     }
-    */
+
     delay(5000);
-    
-    
 }
