@@ -42,43 +42,65 @@ SString GSM::ReceiveMessage()
 {
     String textMessage = "";
 
-    //SIM800L.print("AT+CMGF=1\r");
-    //delay(1000);
-    
+    // SIM800L.print("AT+CMGF=1\r");
+    // delay(500);
 
-    SIM800L.println("AT+CMGL=\"REC ALL\"\r"); // to get the unread message
-    //SIM800L.println("AT+CMGR=0\r"); // to get the message stored at location 3
     if(SIM800L.available() > 0)
     {
         textMessage = SIM800L.readString();
         delay(500);
-        
+        // Serial.println(textMessage);
     }
+    // Serial.println(textMessage);
 
     SString msg;
-    msg.text = "f";
-    msg.number = "f";
     String temp;
     String data = textMessage;
-    int len = data.length(), cnt = 0;
-    Serial.println(len); // For debugging purposes
+    int len = data.length(), cnt1 = 0, cnt2 = 0;
+
+    bool next_rn = false;
+
     for(int i = 0; i < len;i++)
     {
-        //Serial.println(data.substring(i,i+1));
-        temp = data.substring(i,i+1);
-        if (temp == "+" && i < len-1)
-        {
-        if(data.substring(i+1,i+2) == "8")
-            msg.number += data.substring(i,i+13);
-        }
+      // Serial.println(data.substring(i,i+1));
+      temp = data.substring(i,i+1);
 
-        if(temp == "\"")
+      if(temp == "+" && i < len - 1)
+      {
+        // Serial.println(data.substring(i+1,i+2));
+        if(data.substring(i+1,i+2) == "8")
         {
-        cnt = i;       
+          msg.number = data.substring(i+3,i+14);
+          i += 14;
         }
             
+      }
+
+      else if(temp == "\"" && i < len -1)
+      {
+        if(data.substring(i + 1, i + 2) == "\r" && data.substring(i + 2, i + 3) == "\n")
+        {
+          cnt1 = i + 3;
+          next_rn = true;
+          i += 3;
+        }
+        
+      }
+
+      else if(temp == "\r" && i < len -1)
+      {
+        if(data.substring(i + 1, i + 2) == "\n" && next_rn)
+        {
+          cnt2 = i;
+          // Serial.print("Extracted text: ");
+          // Serial.println(data.substring(cnt1, cnt2));
+          next_rn = false;
+        }
+      }
+      
+            
     }
-    msg.text += (data.substring(cnt+3));
-    Serial.println(msg.text); // For debugging purposes
+    msg.text = data.substring(cnt1, cnt2);
+    
     return msg;
 }
