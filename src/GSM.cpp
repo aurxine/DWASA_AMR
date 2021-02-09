@@ -51,6 +51,7 @@ SString GSM::ReceiveMessage()
 
     //SIM800L.println("AT+CMGL=\"REC UNREAD\"\r"); // to get the unread message
     SIM800L.println("AT+CMGR=1\r"); // to get the message stored at location 3
+    delay(1000);
     if(SIM800L.available() > 0)
     {
         Serial.println("Got it");
@@ -64,8 +65,9 @@ SString GSM::ReceiveMessage()
     msg.number = "";
     String temp;
     String data = textMessage;
-    int len = data.length(), cnt = 0;
-    //Serial.println(textMessage); // For debugging purposes
+    int len = data.length(), cnts = 0, cnte = 0;
+    Serial.println(len); // For debugging purposes
+    bool next_rn = false;
     for(int i = 0; i < len;i++)
     {
         //Serial.println(data.substring(i,i+1));
@@ -74,16 +76,34 @@ SString GSM::ReceiveMessage()
         {
         if(data.substring(i+1,i+2) == "8")
             msg.number += data.substring(i+3,i+14);
+            i += 13;
         }
 
-        if(temp == "\"")
+        else if(temp == "\"" && i < len -1)
         {
-        cnt = i;       
+            if(data.substring(i + 1, i + 2) == "\r" && data.substring(i + 2, i + 3) == "\n")
+            {
+            cnts = i + 3;
+            next_rn = true;
+            i += 3;
+            }
+            
+        }
+
+        else if(temp == "\r" && i < len -1)
+        {
+            if(data.substring(i + 1, i + 2) == "\n" && next_rn)
+            {
+            cnte = i;
+            // Serial.print("Extracted text: ");
+            // Serial.println(data.substring(cnt1, cnt2));
+            next_rn = false;
+            }
         }
             
     }
-    msg.text += (data.substring(cnt+3));
-    //Serial.println(msg.text); // For debugging purposes
-    //Serial.println(msg.number);
+    msg.text += (data.substring(cnts, cnte));
+    Serial.println(cnts); // For debugging purposes
+    Serial.println(cnte);
     return msg;
 }

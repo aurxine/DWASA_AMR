@@ -149,7 +149,7 @@ void loop()
     SString msg;
     msg = SIM.ReceiveMessage();
     msg.number = msg.number.substring(0,11);
-    Serial.println("Text "+msg.text);
+    Serial.print("Text "+msg.text);
     Serial.println("Number "+msg.number);
     Serial.println("AFTER msg.text");
     delay(1500);
