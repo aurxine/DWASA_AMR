@@ -16,7 +16,9 @@ void GSM::begin(int braudrate)
 {
     SIM800L.begin(braudrate);
     delay(1000);
-    SIM800L.println("AT+CNMI=2,2,0,0,0\r");  
+    SIM800L.println("AT+IPR=9600");
+    delay(500);
+    SIM800L.println("AT+CNMI=1,2,0,0,0\r");  
     delay(2000);
 }
 void GSM::SendMessage(String message, String number)
