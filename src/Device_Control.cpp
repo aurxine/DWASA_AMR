@@ -55,6 +55,12 @@ Device_Control::Device_Control(/* args */)
     // this->Device_Info.ID = "";
 }
 
+void Device_Control::put_Password(String pass)
+{
+    this->Device_Info.Password = pass;
+    EEPROM.put(0, this->Device_Info);
+}
+
 void Device_Control::put_ID(String ID)// receives and saves an ID
 {
     this->Device_Info.ID = ID;

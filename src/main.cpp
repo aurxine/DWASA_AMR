@@ -98,17 +98,17 @@ void Blink_LED(int number_of_times, int Delay)
     
 }
 
-bool Get_ID()
+bool Get_ID_Pass()
 {
-    String id;
+    String id_and_pass;
     Serial.println("ready");
     delay(500);
-    id = Serial.readString();
+    id_and_pass = Serial.readString();
     delay(500);
     
-    int id_length = id.length();
+    int id_and_pass_length = id_and_pass.length();
 
-    if(id_length != 16)
+    if(id_and_pass_length != 20)
     {
         // Serial.println("Unsuccessful");
         return false;
@@ -117,6 +117,10 @@ bool Get_ID()
     else
     {
         Serial.println("successful");
+        String id, pass;
+        pass = id_and_pass.substring(0, 3);
+        id = id_and_pass.substring(4);
+        Pro_Mini.put_Password(pass);
         Pro_Mini.put_ID(id);
         return true;
     }
@@ -156,16 +160,14 @@ void setup()
 
     while (Pro_Mini.Device_Info.Manufacturing)
     {
-        // Serial.println("in the while");
-        // Blink_LED(2, 100);
-        if(Get_ID())
+        if(Get_ID_Pass())
         {
+            Pro_Mini.Device_Info.Manufacturing = false;
+            Pro_Mini.Update_EEPROM();
             break;
         }
-        // Blink_LED(1, 0);
     }
-    Pro_Mini.Device_Info.Manufacturing = false;
-    Pro_Mini.Update_EEPROM();
+    
     Blink_LED(5, 150);
 
     while (Pro_Mini.Device_Info.Configuration)
