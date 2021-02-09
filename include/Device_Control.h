@@ -7,6 +7,8 @@
 
 typedef struct Device_Info_Structure
 {
+    bool Manufacturing;
+    bool Configuration;
     String ID;
     String Contacts[Max_Number_of_Contacts];
     uint8_t Number_of_Saved_Contacts;
@@ -54,6 +56,8 @@ public:
     unsigned long total_Water_Flow();// returns total water flow
     void save_Water_Flow(unsigned long water_flow);// save stotal water flow in EEPROM
     
+    void Update_EEPROM(); // updates the struct in EEPROM
+    void Get_EEPROM(); // updates Device_Info from EEPROM
     void writeByteInEEPROM(int address, byte data);//writes a byte in EEPROM
     void writeStringInEEPROM(int address, String data);//writes a string (multiple bytes) in EEPROM
     byte readByteInEEPROM(int address);//reads a byte in EEPROM
