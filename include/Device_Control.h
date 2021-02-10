@@ -58,6 +58,8 @@ public:
     unsigned long total_Water_Flow();// returns total water flow
     void save_Water_Flow(unsigned long water_flow);// save stotal water flow in EEPROM
     
+    String Execute_Command(String msg, String number); // executes command coming from sms
+
     void Update_EEPROM(); // updates the struct in EEPROM
     void Get_EEPROM(); // updates Device_Info from EEPROM
     void writeByteInEEPROM(int address, byte data);//writes a byte in EEPROM

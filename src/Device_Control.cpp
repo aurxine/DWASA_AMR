@@ -289,6 +289,121 @@ void Device_Control::save_Water_Flow(unsigned long water_flow)// save stotal wat
     */
 }
 
+String Device_Control::Execute_Command(String msg, String number)
+{
+    String command;
+    if(this->check_Contact(number))
+    {
+        command = msg;
+    }
+
+    else if(msg.substring(0, 3) == this->Device_Info.Password)
+    {
+        command = msg.substring(4);
+    }
+
+    else
+        return "Not Allowed";
+
+    if(command.substring(0, 3) == "set")
+    {
+        if(command.substring(4,10) == "number")
+        {
+            if(this->put_Contact(command.substring(10)))
+            {
+                return "Control Number set successfully";
+            }
+            return "Control Number was not set";
+        }
+
+        else if(command.substring(4,9) == "water")
+        {
+            this->put_Initial_Water_Flow(command.substring(10).toInt());
+            return "Initial Water Flow set successfully";
+        }
+
+        else if(command.substring(4,8) == "flow")
+        {
+            this->put_Water_per_Pulse(command.substring(8).toInt());
+            return "Flow per Pulse set successfully";
+        }
+        else
+            return "Invalid Command";
+    }
+
+    else if(command.substring(0, 3) == "add")
+    {
+        if(command.substring(4,10) == "number")
+        {
+            if(this->put_Contact(command.substring(10)))
+            {
+                return "New Control Number added successfully";
+            }
+            return "New Control Number was not added";
+        }
+    }
+
+    else if(command.substring(0, 7) == "replace")
+    {
+        this->replace_Contact(command.substring(10), (int)command[8] - 48);
+        return "New Control Number was replaced at position " + command[8];
+
+        // return "New Control Number was not replaced";
+    }
+
+    else if(command.substring(0, 5) == "query")
+    {
+        String message = "AMR:";
+        if(command.substring(6) == "water")
+        {
+            message += String(this->total_Water_Flow());
+            return message;
+        }
+
+        else if(command.substring(6) == "flow")
+        {
+            this->Update_EEPROM();
+            message += String(this->Device_Info.Water_per_Pulse);
+            return message;
+        }
+
+        else if(command.substring(6) == "ID")
+        {
+            message += this->Device_Info.ID;
+            return message;
+        }
+
+        else if(command.substring(6) == "password")
+        {
+            message += this->Device_Info.Password;
+            return message;
+        }
+
+        else if(command.substring(6, 12) == "number")
+        {
+            message += this->get_Contact((int)command[13] - 48);
+            return message;
+        }
+
+        else
+            return "Invalid Command";
+    }
+
+    else if(command.substring(0, 5) == "reset")
+    {
+        this->Device_Info.Initial_Water_Flow = 0;
+        this->Device_Info.Water_per_Pulse = 0;
+        this->Device_Info.Water_Flow = 0;
+        this->Device_Info.Configuration = true;
+        this->Update_EEPROM();
+        this->Get_EEPROM();
+        return "Reset successfully";
+    }
+
+    else
+        return "Invalid Command";
+}
+
 void Device_Control::Update_EEPROM()
 {
     EEPROM.put(0, this->Device_Info);
