@@ -292,14 +292,28 @@ void Device_Control::save_Water_Flow(unsigned long water_flow)// save stotal wat
 String Device_Control::Execute_Command(String msg, String number)
 {
     String command;
-    if(this->check_Contact(number))
+
+    if(this->Device_Info.Number_of_Saved_Contacts != 0)
     {
-        command = msg;
+        if(this->check_Contact(number))
+            command = msg;
+        
+        else if(msg.substring(0, 4) == this->Device_Info.Password)
+        {
+            command = msg.substring(4);
+        }
+        else
+            return "Not Allowed";
     }
 
-    else if(msg.substring(0, 3) == this->Device_Info.Password)
+    else if(this->Device_Info.Number_of_Saved_Contacts == 0)
     {
-        command = msg.substring(4);
+        if(msg.substring(0, 4) == this->Device_Info.Password)
+        {
+            command = msg.substring(4);
+        }
+        else
+            return "Not Allowed";
     }
 
     else

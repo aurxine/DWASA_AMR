@@ -27,6 +27,7 @@
 //SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
 GSM SIM(8,9);
 Device_Control Pro_Mini;
+SString Message;
 
 // this variable will count the meter pulses
 // when a certain amount of water passes, the meter will send a pulse through reed switch
@@ -105,6 +106,8 @@ bool Get_ID_Pass()
     delay(500);
     id_and_pass = Serial.readString();
     delay(500);
+
+    id_and_pass = "12341103202102100001";
     
     int id_and_pass_length = id_and_pass.length();
 
@@ -118,7 +121,7 @@ bool Get_ID_Pass()
     {
         Serial.println("successful");
         String id, pass;
-        pass = id_and_pass.substring(0, 3);
+        pass = id_and_pass.substring(0, 4);
         id = id_and_pass.substring(4);
         Pro_Mini.put_Password(pass);
         Pro_Mini.put_ID(id);
@@ -151,12 +154,12 @@ void setup()
     
     Blink_LED(1, 0);
 
-    // Pro_Mini.Device_Info.Manufacturing = true;
-    // Pro_Mini.Device_Info.Configuration = true;
-    // Pro_Mini.Update_EEPROM();
+    Pro_Mini.Device_Info.Manufacturing = true;
+    Pro_Mini.Device_Info.Configuration = true;
+    Pro_Mini.Update_EEPROM();
     Pro_Mini.Get_EEPROM();
-    // Serial.println(Pro_Mini.Device_Info.Manufacturing);
-    // Serial.println(Pro_Mini.Device_Info.Configuration);
+    Serial.println(Pro_Mini.Device_Info.Manufacturing);
+    Serial.println(Pro_Mini.Device_Info.Configuration);
 
     while (Pro_Mini.Device_Info.Manufacturing)
     {
@@ -172,6 +175,18 @@ void setup()
 
     while (Pro_Mini.Device_Info.Configuration)
     {
+        Blink_LED(1, 100);
+        Serial.println("Waiting for configuration");
+        Message = SIM.ReceiveMessage();
+        Serial.println(Message.text);
+        if(Message.text.length() > 1)
+        {
+            String response = Pro_Mini.Execute_Command(Message.text, Message.number);
+            Serial.println(response);
+            SIM.SendMessage(response, Message.number);
+            Serial.println("next line");
+        }
+        delay(500);
         // stays here till control numbers are set
     }
     
