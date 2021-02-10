@@ -43,6 +43,7 @@ void GSM::SendMessage(String message, String number)
 SString GSM::ReceiveMessage()
 {
     String textMessage = "";
+    Serial.println("dhukse");
 
     // SIM800L.print("AT+CMGF=1\r");
     // delay(500);

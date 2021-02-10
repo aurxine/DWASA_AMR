@@ -178,13 +178,14 @@ void setup()
         Blink_LED(1, 100);
         Serial.println("Waiting for configuration");
         Message = SIM.ReceiveMessage();
+        Serial.println("next line");
         Serial.println(Message.text);
         if(Message.text.length() > 1)
         {
             String response = Pro_Mini.Execute_Command(Message.text, Message.number);
             Serial.println(response);
             SIM.SendMessage(response, Message.number);
-            Serial.println("next line");
+            
         }
         delay(500);
         // stays here till control numbers are set
@@ -226,11 +227,11 @@ void setup()
         Serial.println("Contact not available");
     }
     
-    SString msg;
-    msg = SIM.ReceiveMessage();
-    Serial.println(msg.text);
-    Serial.println(msg.number);
-    Serial.println("End");
+    // SString msg;
+    // msg = SIM.ReceiveMessage();
+    // Serial.println(msg.text);
+    // Serial.println(msg.number);
+    // Serial.println("End");
     // Pro_Mini.put_Initial_Water_Flow(2297);
     // Pro_Mini.show_Initial_Water_Flow();
 
