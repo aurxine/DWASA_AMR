@@ -18,8 +18,10 @@ void GSM::begin(int braudrate)
     delay(1000);
     SIM800L.println("AT+IPR=9600");
     delay(500);
+    /*SIM800L.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+    delay(1000);  // Delay of 1000 milli seconds or 1 second
     SIM800L.println("AT+CNMI=1,2,0,0,0\r");  
-    delay(2000);
+    delay(2000);*/
 }
 void GSM::SendMessage(String message, String number)
 {
@@ -37,7 +39,7 @@ void GSM::SendMessage(String message, String number)
     SIM800L.println(message);// The SMS text you want to send
     delay(100);
     SIM800L.println((char)26);// ASCII code of CTRL+Z
-    delay(1000);
+    delay(3000);
 }
 
 SString GSM::ReceiveMessage()
@@ -45,16 +47,19 @@ SString GSM::ReceiveMessage()
     String textMessage = "";
     Serial.println("dhukse");
 
-    // SIM800L.print("AT+CMGF=1\r");
-    // delay(500);
-
+    //SIM800L.print("AT+CMGF=1\r");
+    //delay(500);
+    SIM800L.println("AT+CNMI=1,2,0,0,0\r");  
+    delay(2000);
+    Serial.println("#######");
     if(SIM800L.available() > 0)
     {
         textMessage = SIM800L.readString();
-        delay(500);
+        delay(1000);
         // Serial.println(textMessage);
     }
-    // Serial.println(textMessage);
+    Serial.println("#######");
+    Serial.println(textMessage);
 
     SString msg;
     String temp;
@@ -62,7 +67,7 @@ SString GSM::ReceiveMessage()
     int len = data.length(), cnt1 = 0, cnt2 = 0;
 
     bool next_rn = false;
-
+    Serial.println("Length"+len);
     for(int i = 0; i < len;i++)
     {
       // Serial.println(data.substring(i,i+1));
@@ -104,6 +109,8 @@ SString GSM::ReceiveMessage()
             
     }
     msg.text = data.substring(cnt1, cnt2);
-    
+    Serial.println("#######");
+    Serial.println(msg.text);
+    Serial.println("#######");
     return msg;
 }

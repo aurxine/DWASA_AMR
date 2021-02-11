@@ -161,6 +161,7 @@ void setup()
     Serial.println(Pro_Mini.Device_Info.Manufacturing);
     Serial.println(Pro_Mini.Device_Info.Configuration);
 
+    SIM.delAllMessage();
     while (Pro_Mini.Device_Info.Manufacturing)
     {
         if(Get_ID_Pass())
@@ -187,7 +188,7 @@ void setup()
             SIM.SendMessage(response, Message.number);
             
         }
-        delay(500);
+        delay(2000);
         // stays here till control numbers are set
     }
     
