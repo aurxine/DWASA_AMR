@@ -228,7 +228,12 @@ void setup()
 
 void loop() 
 {
-    // bool was_wire_cut = detect_wire_cut();
-    // delay(500);
-    // Serial.println(counter);
+    if(is_wire_cut)
+    {
+        SIM.SendMessage("Sensor wire is cut!", Pro_Mini.Device_Info.Contacts[0]);
+        is_wire_cut = false;
+    }
+
+    Message = SIM.ReceiveMessage();
+    Pro_Mini.Execute_Command(Message.text, Message.number);
 }
