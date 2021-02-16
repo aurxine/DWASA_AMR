@@ -5,9 +5,25 @@
 #define Max_Number_of_Contacts 5
 #define ID_Length 10
 
+typedef struct Device_Info_Structure
+{
+    bool Manufacturing;
+    bool Configuration;
+    String Password;
+    String ID;
+    String Contacts[Max_Number_of_Contacts];
+    uint8_t Number_of_Saved_Contacts;
+    unsigned long Water_Flow;
+    unsigned long Initial_Water_Flow;
+    int Water_per_Pulse;
+
+}Device_Info_Type;
+
 class Device_Control
 {
 public:
+
+    /* Deprecating those below variables for using Device_Info_Type
     String ID;
     String Contacts[Max_Number_of_Contacts];
     unsigned long Water_Flow;
@@ -19,8 +35,11 @@ public:
     uint8_t Contacts_start_address = Number_of_saved_contacts_address + Max_Number_of_Contacts*11;
     uint8_t Water_per_Pulse_start_address = Contacts_start_address + 1;
     uint8_t Water_Flow_start_address = Water_per_Pulse_start_address + 1;
+    */
 
     Device_Control(/* args */);
+    Device_Info_Type Device_Info;
+    void put_Password(String pass); // receives and saves Password
     void put_ID(String ID);// receives and saves an ID
     void show_ID();//Serial prints ID
     String device_ID();//returns ID
@@ -39,6 +58,10 @@ public:
     unsigned long total_Water_Flow();// returns total water flow
     void save_Water_Flow(unsigned long water_flow);// save stotal water flow in EEPROM
     
+    String Execute_Command(String msg, String number); // executes command coming from sms
+
+    void Update_EEPROM(); // updates the struct in EEPROM
+    void Get_EEPROM(); // updates Device_Info from EEPROM
     void writeByteInEEPROM(int address, byte data);//writes a byte in EEPROM
     void writeStringInEEPROM(int address, String data);//writes a string (multiple bytes) in EEPROM
     byte readByteInEEPROM(int address);//reads a byte in EEPROM
