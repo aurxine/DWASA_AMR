@@ -51,8 +51,21 @@ uint64_t to_unsigned_long(uint8_t* arr)
 
 Device_Control::Device_Control(/* args */)
 {
-    this->Device_Info.Number_of_Saved_Contacts = 0;
+    // this->Device_Info.Number_of_Saved_Contacts = 0;
     // this->Device_Info.ID = "";
+    if(this->Device_Info.Manufacturing)
+    {
+        this->Device_Info.ID = "";
+        this->Device_Info.Password = "";
+    }
+    if(this->Device_Info.Configuration)
+    {
+        this->Device_Info.Number_of_Saved_Contacts = 0;
+        this->Device_Info.Initial_Water_Flow = 0;
+        this->Device_Info.Water_per_Pulse = 0;
+        this->Device_Info.Water_Flow = 0;
+    }
+    this->Update_EEPROM();
 }
 
 void Device_Control::put_Password(String pass)
@@ -321,10 +334,8 @@ String Device_Control::Execute_Command(String msg, String number)
 
     if(command.substring(0, 3) == "set")
     {
-        Serial.println("sset e dhukse");
         if(command.substring(4,10) == "number")
         {
-            Serial.println("number e dhuksse");
             if(this->put_Contact(command.substring(10)))
             {
                 return "Control Number set successfully";

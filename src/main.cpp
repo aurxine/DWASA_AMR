@@ -101,7 +101,7 @@ bool Get_ID_Pass()
     id_and_pass = Serial.readString();
     delay(500);
 
-    id_and_pass = "12341103202102100001";
+    // id_and_pass = "12341103202102100001";
     
     int id_and_pass_length = id_and_pass.length();
 
@@ -148,8 +148,8 @@ void setup()
     
     Blink_LED(1, 0);
 
-    Pro_Mini.Device_Info.Manufacturing = true;
-    Pro_Mini.Device_Info.Configuration = true;
+    // Pro_Mini.Device_Info.Manufacturing = true;
+    // Pro_Mini.Device_Info.Configuration = true;
     Pro_Mini.Update_EEPROM();
     Pro_Mini.Get_EEPROM();
     Serial.println(Pro_Mini.Device_Info.Manufacturing);
@@ -169,6 +169,20 @@ void setup()
 
     while (Pro_Mini.Device_Info.Configuration)
     {
+        Pro_Mini.Get_EEPROM();
+        Serial.println(Pro_Mini.Device_Info.Number_of_Saved_Contacts);
+        Serial.println(Pro_Mini.Device_Info.Water_Flow);
+        Serial.println(Pro_Mini.Device_Info.Water_per_Pulse);
+        if(Pro_Mini.Device_Info.Number_of_Saved_Contacts > 0)
+        {
+            if(Pro_Mini.Device_Info.Water_Flow > 0 && Pro_Mini.Device_Info.Water_per_Pulse > 0)
+            {
+                Pro_Mini.Device_Info.Configuration = false;
+                Pro_Mini.Update_EEPROM();
+                break;
+            }
+        }
+
         Blink_LED(1, 100);
         Serial.println("Waiting for configuration");
         Message = SIM.ReceiveMessage();
@@ -179,39 +193,27 @@ void setup()
             Serial.println(response);
             delay(1000);
             SIM.SendMessage(response, Message.number);
-            
         }
         delay(1000);
         // stays here till control numbers are set
     }
     
+    Blink_LED(5, 100);
+    
     // Pro_Mini.put_ID("2020150001");
     // String id = Pro_Mini.ID;
     // Serial.println(id);
+    Pro_Mini.Get_EEPROM();
     Pro_Mini.show_ID();
 
     //Pro_Mini.put_Water_per_Pulse(100);
     Pro_Mini.show_Water_per_Pulse();
 
-    Pro_Mini.put_Contact("01624593436");
-    Pro_Mini.put_Contact("01689294634");
-    Pro_Mini.put_Contact("01312593436");
     Pro_Mini.show_All_Contacts();
 
     Serial.println();
     Serial.println(Pro_Mini.Device_Info.Contacts[0]);
-    /*/ Changing line
-    info_type info;
-    info.number1 = "01521327794";
-    EEPROM.put(0, info);
-    info_type read_info = EEPROM.get(0, info);
-    Serial.println(read_info.number1);
-    info.number1 = "01521327794 new";
-    EEPROM.put(0, info);
-    read_info = EEPROM.get(0, info);
-    Serial.println(read_info.number1);
 
-    // Changing line end */
     if(Pro_Mini.check_Contact("01324593436"))
     {
         Serial.println("Contact Available");
@@ -221,17 +223,6 @@ void setup()
         Serial.println("Contact not available");
     }
     
-    // SString msg;
-    // msg = SIM.ReceiveMessage();
-    // Serial.println(msg.text);
-    // Serial.println(msg.number);
-    // Serial.println("End");
-    // Pro_Mini.put_Initial_Water_Flow(2297);
-    // Pro_Mini.show_Initial_Water_Flow();
-
-    // Pro_Mini.put_Water_per_Pulse(10);
-    // Pro_Mini.show_Water_per_Pulse();
-
 
 }
 

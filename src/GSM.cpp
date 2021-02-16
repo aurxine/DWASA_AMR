@@ -20,6 +20,8 @@ void GSM::begin(int braudrate)
     delay(500);
     SIM800L.println("AT+CNMI=1,2,0,0,0\r");  
     delay(2000);
+    SIM800L.println("AT+CMGF=1");    
+    delay(1000);
 }
 
 void GSM::flush()
