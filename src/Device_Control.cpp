@@ -321,8 +321,10 @@ String Device_Control::Execute_Command(String msg, String number)
 
     if(command.substring(0, 3) == "set")
     {
+        Serial.println("sset e dhukse");
         if(command.substring(4,10) == "number")
         {
+            Serial.println("number e dhuksse");
             if(this->put_Contact(command.substring(10)))
             {
                 return "Control Number set successfully";
@@ -332,7 +334,7 @@ String Device_Control::Execute_Command(String msg, String number)
 
         else if(command.substring(4,9) == "water")
         {
-            this->put_Initial_Water_Flow(command.substring(10).toInt());
+            this->put_Initial_Water_Flow(command.substring(9).toInt());
             return "Initial Water Flow set successfully";
         }
 
@@ -371,6 +373,7 @@ String Device_Control::Execute_Command(String msg, String number)
         if(command.substring(6) == "water")
         {
             message += String(this->total_Water_Flow());
+            Serial.println("debug" + message);
             return message;
         }
 

@@ -169,20 +169,19 @@ void setup()
 
     while (Pro_Mini.Device_Info.Configuration)
     {
-        SIM.flush();
         Blink_LED(1, 100);
         Serial.println("Waiting for configuration");
         Message = SIM.ReceiveMessage();
-        Serial.println("next line");
         Serial.println(Message.text);
         if(Message.text.length() > 1)
         {
             String response = Pro_Mini.Execute_Command(Message.text, Message.number);
             Serial.println(response);
+            delay(1000);
             SIM.SendMessage(response, Message.number);
             
         }
-        delay(500);
+        delay(1000);
         // stays here till control numbers are set
     }
     
