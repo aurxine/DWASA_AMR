@@ -21,6 +21,15 @@ void GSM::begin(int braudrate)
     SIM800L.println("AT+CNMI=1,2,0,0,0\r");  
     delay(2000);
 }
+
+void GSM::flush()
+{
+  SIM800L.write(27);
+  SIM800L.write(27);
+  SIM800L.write(27);
+  SIM800L.print("\r\n");
+}
+
 void GSM::SendMessage(String message, String number)
 {
     unsigned int len = number.length() + 1;
@@ -52,7 +61,7 @@ SString GSM::ReceiveMessage()
     {
         textMessage = SIM800L.readString();
         delay(500);
-        // Serial.println(textMessage);
+        Serial.println(textMessage);
     }
     // Serial.println(textMessage);
 

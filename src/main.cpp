@@ -169,6 +169,7 @@ void setup()
 
     while (Pro_Mini.Device_Info.Configuration)
     {
+        SIM.flush();
         Blink_LED(1, 100);
         Serial.println("Waiting for configuration");
         Message = SIM.ReceiveMessage();

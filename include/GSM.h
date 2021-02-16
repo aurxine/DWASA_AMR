@@ -21,6 +21,7 @@ public:
     void SendMessage(String message, String number);
     SString ReceiveMessage();
     void begin(int braudrate);
+    void flush();
     void delAllMessage();
     // ~GSM();
 };
