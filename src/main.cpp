@@ -11,14 +11,12 @@
 // used to debounce
 #define bounce_time 200
 
-// this pin will be attached to a wire of which one end will be high
-// this is used for detecting if the sensor was cut
-// when the sensor wire is cut, this wire will also be cut
-// thus generating a signal
-#define wire_cut_detect_pin A0
+// This pin will be pulled up so that it provides 5V output
+// When it iss connected to the sensor it will read 0V input
+// When the wire is cut it will read 5V (HIGH) input
+#define wire_cut_detect_pin 3
+bool is_wire_cut = false;
 
-// this pin will be used for hardware reset
-#define reset_pin 3
 
 // This will be used for indication of different states
 #define indicator_LED 7
@@ -42,7 +40,7 @@ typedef struct info_type_struct{
 
 
 // Changing end line
-void pulse_counter()
+void Pulse_Counter()
 {
     static unsigned long last_interrupt_time = 0;
     unsigned long interrupt_time = millis();
@@ -56,16 +54,12 @@ void pulse_counter()
   
 }
 
-bool detect_wire_cut()
+void Detect_Wire_Cut()
 {
-    int check_wire_voltage = analogRead(wire_cut_detect_pin);
-    //Serial.println(check_wire_voltage);
-    if(check_wire_voltage < 1000)
-    {
-        //Serial.println("Wire is cut");
-        return true;
-    }
-    return false;
+    if(digitalRead(wire_cut_detect_pin) == HIGH)
+        is_wire_cut = true;
+    else
+        is_wire_cut = false;
 }
 
 void reset()
@@ -147,8 +141,8 @@ void setup()
     pinMode(reed_switch_pin, INPUT_PULLUP);
     pinMode(indicator_LED, OUTPUT);
 
-    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), pulse_counter, FALLING);
-    attachInterrupt(digitalPinToInterrupt(reset_pin), reset, FALLING);
+    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
 
     delay(1000);
     
