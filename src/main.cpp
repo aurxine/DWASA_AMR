@@ -188,8 +188,8 @@ void setup()
 //     // Pro_Mini.Device_Info.Configuration = true;
 //     // Pro_Mini.Update_EEPROM();
 //     // Pro_Mini.Get_EEPROM();
-//     Serial.println(Pro_Mini.Device_Info.Manufacturing);
-//     Serial.println(Pro_Mini.Device_Info.Configuration);
+    Serial.println(Pro_Mini.Device_Info.Manufacturing);
+    Serial.println(Pro_Mini.Device_Info.Configuration);
 //     /*
 //     while (Pro_Mini.Device_Info.Manufacturing)
 //     {
@@ -222,21 +222,32 @@ void setup()
 //     }
 //     */
     
-    // Pro_Mini.put_ID("11032020150001");
+    Pro_Mini.put_ID("11032020150001");
     // String id = Pro_Mini.ID;
     // Serial.println(id);
     Pro_Mini.show_ID();
 
-    // Pro_Mini.put_Water_per_Pulse(100);
+    Pro_Mini.put_Water_per_Pulse(100);
     Pro_Mini.show_Water_per_Pulse();
-    /*
+
+    // Pro_Mini.put_Password("1234");
+    // Serial.println("Abar");
+
+    // Pro_Mini.Reset();
+    
     Pro_Mini.put_Contact("01624593436");
-    Pro_Mini.put_Contact("01689294634");
-    Pro_Mini.put_Contact("01312593436");
-    Pro_Mini.put_Contact("01712593436");
-    */
-    Pro_Mini.Get_EEPROM();
     Pro_Mini.show_All_Contacts();
+    Pro_Mini.replace_Contact("01689294634");
+    // Pro_Mini.put_Contact("01312593436");
+    // Pro_Mini.put_Contact("01712593436");
+    
+    // Pro_Mini.Get_EEPROM();
+    // Pro_Mini.show_All_Contacts();
+    // Pro_Mini.Device_Info.Control_Number = "01624";
+    Pro_Mini.Update_EEPROM();
+    Pro_Mini.Get_EEPROM();
+    // EEPROM.get(0,Pro_Mini.Device_Info);
+    Serial.println(Pro_Mini.Device_Info.Control_Number);
 
     Serial.println("Checked");
 //     // Serial.println(Pro_Mini.Device_Info.Contacts[0]);
