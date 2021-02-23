@@ -4,7 +4,7 @@
 #include<EEPROM.h>
 #define Max_Number_of_Contacts 5
 #define ID_Length 10
-
+/*
 typedef struct Device_Info_Structure
 {
     bool Manufacturing;
@@ -14,11 +14,11 @@ typedef struct Device_Info_Structure
     String Contacts[Max_Number_of_Contacts];
     uint8_t Number_of_Saved_Contacts;
     unsigned long Water_Flow;
-    unsigned long Initial_Water_Flow;
+    // unsigned long Initial_Water_Flow;
     int Water_per_Pulse;
 
 }Device_Info_Type;
-
+*/
 class Device_Control
 {
 public:
@@ -36,6 +36,19 @@ public:
     uint8_t Water_per_Pulse_start_address = Contacts_start_address + 1;
     uint8_t Water_Flow_start_address = Water_per_Pulse_start_address + 1;
     */
+   typedef struct Device_Info_Structure
+    {
+        bool Manufacturing;
+        bool Configuration;
+        String Password;
+        String ID;
+        String Contacts[Max_Number_of_Contacts];
+        uint8_t Number_of_Saved_Contacts;
+        unsigned long Water_Flow;
+        // unsigned long Initial_Water_Flow;
+        int Water_per_Pulse;
+
+    }Device_Info_Type;
 
     Device_Control(/* args */);
     Device_Info_Type Device_Info;

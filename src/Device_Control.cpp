@@ -165,8 +165,9 @@ void Device_Control::show_Contact(int pos)//shows contact at a specified positio
 
 void Device_Control::show_All_Contacts()//shows all saved contacts
 {
-    this->Device_Info = EEPROM.get(0, this->Device_Info);
+    EEPROM.get(0, this->Device_Info);
     uint8_t number_of_saved_contacts = this->Device_Info.Number_of_Saved_Contacts;
+    Serial.println(number_of_saved_contacts);
     for(uint8_t i = 0; i < number_of_saved_contacts; i++)
     {
         Serial.print("Contact " + String(i + 1) + ": ");
@@ -408,7 +409,7 @@ String Device_Control::Execute_Command(String msg, String number)
 
     else if(command.substring(0, 5) == "reset")
     {
-        this->Device_Info.Initial_Water_Flow = 0;
+        // this->Device_Info.Initial_Water_Flow = 0;
         this->Device_Info.Water_per_Pulse = 0;
         this->Device_Info.Water_Flow = 0;
         this->Device_Info.Configuration = true;
@@ -417,8 +418,8 @@ String Device_Control::Execute_Command(String msg, String number)
         return "Reset successfully";
     }
 
-    else
-        return "Invalid Command";
+    
+    return "Invalid Command";
 }
 
 void Device_Control::Update_EEPROM()
