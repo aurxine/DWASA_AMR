@@ -31,13 +31,6 @@ SString Message;
 // when a certain amount of water passes, the meter will send a pulse through reed switch
 unsigned long int counter = 0;
 
-// Changing line
-
-typedef struct info_type_struct{
-    String number1;
-}info_type;
-
-
 
 // Changing end line
 void Pulse_Counter()
@@ -48,6 +41,7 @@ void Pulse_Counter()
     if(interrupt_time - last_interrupt_time > bounce_time)
     {
         counter++;
+        Pro_Mini.Device_Info.Water_Flow += Pro_Mini.Device_Info.Water_per_Pulse; 
     }
 
     last_interrupt_time = interrupt_time;
@@ -136,20 +130,21 @@ void setup()
     
     //Serial.write ("Will read Message");
 
-    pinMode(reed_switch_pin, INPUT_PULLUP);
-    pinMode(wire_cut_detect_pin, INPUT);
+    pinMode(wire_cut_detect_pin, OUTPUT);
+
+    digitalWrite(wire_cut_detect_pin, HIGH);
     pinMode(reed_switch_pin, INPUT_PULLUP);
     pinMode(indicator_LED, OUTPUT);
 
     attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
-    attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
+    // attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
 
     delay(1000);
     
     Blink_LED(1, 0);
 
-    // Pro_Mini.Device_Info.Manufacturing = true;
-    // Pro_Mini.Device_Info.Configuration = true;
+    Pro_Mini.Device_Info.Manufacturing = true;
+    Pro_Mini.Device_Info.Configuration = true;
     Pro_Mini.Update_EEPROM();
     Pro_Mini.Get_EEPROM();
     Serial.println(Pro_Mini.Device_Info.Manufacturing);
@@ -235,5 +230,17 @@ void loop()
     }
 
     Message = SIM.ReceiveMessage();
-    Pro_Mini.Execute_Command(Message.text, Message.number);
+
+    if(Message.text.length() > 1)
+    {
+        String response = Pro_Mini.Execute_Command(Message.text, Message.number);
+        Serial.println(response);
+        delay(1000);
+        SIM.SendMessage(response, Message.number);
+    }
+
+    Serial.print("Count: ");
+    Serial.println(counter);
+    Pro_Mini.Update_EEPROM();
+    delay(500);
 }
