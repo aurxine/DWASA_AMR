@@ -5,6 +5,8 @@
 #include"GSM.h"
 //#include"Device_Control.cpp"
 // this pin will be attached to the reed switch pin
+#define pro_mini_restart_pin 12 // used to reset or restart the pro mini
+#define gsm_restart_pin 6 // used to restart GSM module
 #define reed_switch_pin 2 
 
 //ms before interrupt is detected again
@@ -61,6 +63,17 @@ void reset()
     // counter and total water will be reseted
 }
 
+void Reset_Pro_mini()
+{
+    digitalWrite(pro_mini_restart_pin, LOW);
+}
+
+void Reset_GSM()
+{
+    digitalWrite(gsm_restart_pin, LOW);
+    delay(100);
+    digitalWrite(gsm_restart_pin, HIGH);
+}
 
 void Blink_LED(int number_of_times, int Delay)
 {
@@ -117,73 +130,42 @@ bool Get_ID_Pass()
     }
 }
 
-/*
-typedef struct Device_Info_Structures
-{
-    bool Manufacturing;
-    bool Configuration;
-    String Password;
-    String ID;
-    String Contacts[Max_Number_of_Contacts];
-    uint8_t Number_of_Saved_Contacts;
-    unsigned long Water_Flow;
-    // unsigned long Initial_Water_Flow;
-    int Water_per_Pulse;
 
-}Device_Info_Types;
-
-*/
 void setup() 
 {
-    Serial.begin(9600);
-    //SIM800L.begin(9600);
+    digitalWrite(pro_mini_restart_pin, HIGH);
+    digitalWrite(gsm_restart_pin, HIGH);
+    delay(100);
 
-    //SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
+    pinMode(pro_mini_restart_pin, OUTPUT);
+    pinMode(gsm_restart_pin, OUTPUT);
+
+    Serial.begin(9600);
+
     SIM.begin(9600);
     delay(1000);
-    /*
-    Device_Info_Types devinfo;
 
-    devinfo.Contacts[0] = "01624593436";
-    devinfo.ID = "1234567890";
-    devinfo.Password = "1234";
-    devinfo.Water_per_Pulse = 100;
-    devinfo.Water_Flow = 12345;
-
-
-    pinMode(wire_cut_detect_pin, OUTPUT);
-
-    digitalWrite(wire_cut_detect_pin, HIGH);
+    pinMode(wire_cut_detect_pin, INPUT_PULLUP);
     pinMode(reed_switch_pin, INPUT_PULLUP);
     pinMode(indicator_LED, OUTPUT);
 
     attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
-    // attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
 
-
-    EEPROM.get(0, devinfo2);
-
-    Serial.println(devinfo2.Contacts[0]);
-    Serial.println(devinfo2.ID);
-    Serial.println(devinfo2.Password);
-    Serial.println(devinfo2.Water_per_Pulse);
-    Serial.println(devinfo2.Water_Flow);
-
-*/
     
-//     //Serial.write ("Will read Message");
+    //Serial.write ("Will read Message");
 
-//     pinMode(reed_switch_pin, INPUT_PULLUP);
-//     pinMode(wire_cut_detect_pin, INPUT);
-//     pinMode(reed_switch_pin, INPUT_PULLUP);
-//     pinMode(indicator_LED, OUTPUT);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(wire_cut_detect_pin, INPUT);
+    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(indicator_LED, OUTPUT);
 
-//     attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
-//     attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
 
-//     delay(1000);
+    delay(1000);
     
-//     Blink_LED(1, 0);
+    Blink_LED(1, 0);
 
 
     while (Pro_Mini.Device_Info.Configuration)
