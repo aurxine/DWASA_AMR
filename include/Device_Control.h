@@ -11,11 +11,13 @@ typedef struct Device_Info_Structure
     bool Configuration;
     String Password;
     String ID;
-    String Contacts[Max_Number_of_Contacts];
-    uint8_t Number_of_Saved_Contacts;
+    String Control_Number;
+    // uint8_t Number_of_Saved_Contacts;
     unsigned long Water_Flow;
-    unsigned long Initial_Water_Flow;
+    // unsigned long Initial_Water_Flow;
     int Water_per_Pulse;
+    bool is_Control_Number_Set;
+    //String Contacts[Max_Number_of_Contacts];
 
 }Device_Info_Type;
 
@@ -36,6 +38,19 @@ public:
     uint8_t Water_per_Pulse_start_address = Contacts_start_address + 1;
     uint8_t Water_Flow_start_address = Water_per_Pulse_start_address + 1;
     */
+//    typedef struct Device_Info_Structure
+//     {
+//         bool Manufacturing;
+//         bool Configuration;
+//         String Password;
+//         String ID;
+//         String Contacts[Max_Number_of_Contacts];
+//         uint8_t Number_of_Saved_Contacts;
+//         unsigned long Water_Flow;
+//         // unsigned long Initial_Water_Flow;
+//         int Water_per_Pulse;
+
+//     }Device_Info_Type;
 
     Device_Control(/* args */);
     Device_Info_Type Device_Info;
@@ -45,7 +60,7 @@ public:
     String device_ID();//returns ID
 
     bool put_Contact(String number);//puts a number and appends it to the array
-    void replace_Contact(String number, int position);//replace a contact in specified position
+    void replace_Contact(String number);//replace a contact in specified position
     bool check_Contact(String number);//checks whether a contact exists or not
     String get_Contact(int pos); //returns contact number at pos position
     void show_Contact(int pos);//shows contact at a specified position
@@ -62,6 +77,7 @@ public:
 
     void Update_EEPROM(); // updates the struct in EEPROM
     void Get_EEPROM(); // updates Device_Info from EEPROM
+    void Reset();
     void writeByteInEEPROM(int address, byte data);//writes a byte in EEPROM
     void writeStringInEEPROM(int address, String data);//writes a string (multiple bytes) in EEPROM
     byte readByteInEEPROM(int address);//reads a byte in EEPROM

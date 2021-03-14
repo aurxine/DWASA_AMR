@@ -51,8 +51,21 @@ uint64_t to_unsigned_long(uint8_t* arr)
 
 Device_Control::Device_Control(/* args */)
 {
-    this->Device_Info.Number_of_Saved_Contacts = 0;
+    // this->Device_Info.Number_of_Saved_Contacts = 0;
     // this->Device_Info.ID = "";
+    if(this->Device_Info.Manufacturing)
+    {
+        this->Device_Info.ID = "";
+        this->Device_Info.Password = "";
+    }
+    if(this->Device_Info.Configuration)
+    {
+        // this->Device_Info.Number_of_Saved_Contacts = 0;
+        this->Device_Info.is_Control_Number_Set = false;
+        this->Device_Info.Water_per_Pulse = 0;
+        this->Device_Info.Water_Flow = 0;
+    }
+    // this->Get_EEPROM();
 }
 
 void Device_Control::put_Password(String pass)
@@ -73,7 +86,7 @@ void Device_Control::put_ID(String ID)// receives and saves an ID
 
 void Device_Control::show_ID()//Serial prints ID
 {
-    this->Device_Info = EEPROM.get(0,this->Device_Info);
+    EEPROM.get(0,this->Device_Info);
     Serial.print("Device ID ");
     Serial.println(this->Device_Info.ID);
     /*
@@ -97,17 +110,33 @@ bool Device_Control::put_Contact(String number)//puts a number and appends it to
 {
     
     
-    Serial.print("Input Number: "); Serial.println(number);
-    this->Device_Info = EEPROM.get(0, Device_Info);
+    // Serial.print("Input Number: "); Serial.println(number);
+    
+    EEPROM.get(0, this->Device_Info);
+    if (this->Device_Info.is_Control_Number_Set)
+    {
+
+        return false;
+    }
+    else
+    {
+        Serial.println("Setting Control Number "+number);
+        this->Device_Info.Control_Number = number;
+        this->Device_Info.is_Control_Number_Set = 1;
+        EEPROM.put(0, this->Device_Info);
+        return true;
+    }
+    /*
     uint8_t number_of_saved_contacts = Device_Info.Number_of_Saved_Contacts;
     Serial.print("Number of already saved contacts: "); 
     Serial.println(number_of_saved_contacts);
     if(number_of_saved_contacts == Max_Number_of_Contacts)
         return false;
+    Serial.print("Saving This Number: "); Serial.println(number);
     this->Device_Info.Contacts[number_of_saved_contacts] = number;
     this->Device_Info.Number_of_Saved_Contacts += 1;
     EEPROM.put(0, this->Device_Info);
-    /*
+    
     int number_of_saved_contacts = this->readByteInEEPROM(Number_of_saved_contacts_address);
     Serial.print("Number of already saved contacts: "); Serial.println(number_of_saved_contacts);
     if(number_of_saved_contacts == Max_Number_of_Contacts)
@@ -119,10 +148,11 @@ bool Device_Control::put_Contact(String number)//puts a number and appends it to
     return true;
 }
 
-void Device_Control::replace_Contact(String number, int position)//replace a contact in specified position
+void Device_Control::replace_Contact(String number)//replace a contact in specified position
 {   
-    this->Device_Info = EEPROM.get(0, this->Device_Info);
-    this->Device_Info.Contacts[position] = number;
+    EEPROM.get(0, this->Device_Info);
+    //this->Device_Info.Contacts[position] = number;
+    this->Device_Info.Control_Number = number;
     EEPROM.put(0, this->Device_Info);
     /*
     this->writeStringInEEPROM(Contacts_start_address + position*11, number);
@@ -132,6 +162,11 @@ void Device_Control::replace_Contact(String number, int position)//replace a con
 bool Device_Control::check_Contact(String number)//checks whether a contact exists or not
 {
     this->Device_Info = EEPROM.get(0, this->Device_Info);
+    if (this->Device_Info.Control_Number == number)
+    {
+        return 1;
+    }
+    /*
     uint8_t number_of_saved_contacts = this->Device_Info.Number_of_Saved_Contacts;
     //uint8_t number_of_saved_contacts = this->readByteInEEPROM(Number_of_saved_contacts_address);
     
@@ -141,15 +176,21 @@ bool Device_Control::check_Contact(String number)//checks whether a contact exis
         {
             return 1;
         }
-    }
+    }*/
     return 0;
 }
 
 void Device_Control::show_Contact(int pos)//shows contact at a specified position
 {
-    this->Device_Info = EEPROM.get(0, this->Device_Info);
+    EEPROM.get(0, this->Device_Info);
+    if (pos > 1)
+    {
+        Serial.println("Only Position 1 exists");
+        return;
+    }
     Serial.print("Contact "+String(pos)+":");
-    Serial.println(this->Device_Info.Contacts[pos]);
+    Serial.println(this->Device_Info.Control_Number);
+    // Serial.println(this->Device_Info.Contacts[pos]);
     /*
     int number_of_saved_contacts = this->readByteInEEPROM(Number_of_saved_contacts_address);
     for(int i = 0; i < number_of_saved_contacts; i++)
@@ -165,13 +206,22 @@ void Device_Control::show_Contact(int pos)//shows contact at a specified positio
 
 void Device_Control::show_All_Contacts()//shows all saved contacts
 {
-    this->Device_Info = EEPROM.get(0, this->Device_Info);
-    uint8_t number_of_saved_contacts = this->Device_Info.Number_of_Saved_Contacts;
-    for(uint8_t i = 0; i < number_of_saved_contacts; i++)
+    EEPROM.get(0, this->Device_Info);
+    if (this->Device_Info.is_Control_Number_Set)
     {
-        Serial.print("Contact " + String(i + 1) + ": ");
-        Serial.println(this->Device_Info.Contacts[i]);
+        Serial.println("Control Number :"+this->Device_Info.Control_Number);
+        return;
     }
+    Serial.println("Control Number doesn't exist");
+    return;
+
+    // uint8_t number_of_saved_contacts = this->Device_Info.Number_of_Saved_Contacts;
+    // Serial.println(number_of_saved_contacts);
+    // for(uint8_t i = 0; i < number_of_saved_contacts; i++)
+    // {
+    //     Serial.print("Contact " + String(i + 1) + ": ");
+    //     Serial.println(this->Device_Info.Contacts[i]);
+    // }
     /*
     int number_of_saved_contacts = this->readByteInEEPROM(Number_of_saved_contacts_address);
     for(int i = 0; i < number_of_saved_contacts; i++)
@@ -185,8 +235,8 @@ void Device_Control::show_All_Contacts()//shows all saved contacts
 
 String Device_Control::get_Contact(int pos)
 {
-    this->Device_Info = EEPROM.get(0, this->Device_Info);
-    return this->Device_Info.Contacts[pos];
+    EEPROM.get(0, this->Device_Info);
+    return this->Device_Info.Control_Number;
     /*
     int number_of_saved_contacts = this->readByteInEEPROM(Number_of_saved_contacts_address);
     if (pos > number_of_saved_contacts)
@@ -293,7 +343,7 @@ String Device_Control::Execute_Command(String msg, String number)
 {
     String command;
 
-    if(this->Device_Info.Number_of_Saved_Contacts != 0)
+    if(this->Device_Info.is_Control_Number_Set)
     {
         if(this->check_Contact(number))
             command = msg;
@@ -306,7 +356,7 @@ String Device_Control::Execute_Command(String msg, String number)
             return "Not Allowed";
     }
 
-    else if(this->Device_Info.Number_of_Saved_Contacts == 0)
+    else if(this->Device_Info.is_Control_Number_Set == 0)
     {
         if(msg.substring(0, 4) == this->Device_Info.Password)
         {
@@ -361,7 +411,7 @@ String Device_Control::Execute_Command(String msg, String number)
 
     else if(command.substring(0, 7) == "replace")
     {
-        this->replace_Contact(command.substring(10), (int)command[8] - 48);
+        this->replace_Contact(command.substring(10));
         return "New Control Number was replaced at position " + command[8];
 
         // return "New Control Number was not replaced";
@@ -408,7 +458,7 @@ String Device_Control::Execute_Command(String msg, String number)
 
     else if(command.substring(0, 5) == "reset")
     {
-        this->Device_Info.Initial_Water_Flow = 0;
+        // this->Device_Info.Initial_Water_Flow = 0;
         this->Device_Info.Water_per_Pulse = 0;
         this->Device_Info.Water_Flow = 0;
         this->Device_Info.Configuration = true;
@@ -417,8 +467,8 @@ String Device_Control::Execute_Command(String msg, String number)
         return "Reset successfully";
     }
 
-    else
-        return "Invalid Command";
+    
+    return "Invalid Command";
 }
 
 void Device_Control::Update_EEPROM()
@@ -429,6 +479,13 @@ void Device_Control::Update_EEPROM()
 void Device_Control::Get_EEPROM()
 {
     EEPROM.get(0, this->Device_Info);
+}
+
+void Device_Control::Reset()
+{
+    
+    this->Device_Info.is_Control_Number_Set = 0;
+    EEPROM.put(0,this->Device_Info);
 }
 
 void Device_Control::writeByteInEEPROM(int address, byte data)
