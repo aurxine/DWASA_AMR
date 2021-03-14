@@ -66,6 +66,7 @@ Device_Control::Device_Control(/* args */)
         this->Device_Info.Water_Flow = 0;
     }
     // this->Get_EEPROM();
+
 }
 
 void Device_Control::put_Password(String pass)
@@ -371,10 +372,8 @@ String Device_Control::Execute_Command(String msg, String number)
 
     if(command.substring(0, 3) == "set")
     {
-        Serial.println("sset e dhukse");
         if(command.substring(4,10) == "number")
         {
-            Serial.println("number e dhuksse");
             if(this->put_Contact(command.substring(10)))
             {
                 return "Control Number set successfully";
