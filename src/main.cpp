@@ -117,7 +117,22 @@ bool Get_ID_Pass()
     }
 }
 
+/*
+typedef struct Device_Info_Structures
+{
+    bool Manufacturing;
+    bool Configuration;
+    String Password;
+    String ID;
+    String Contacts[Max_Number_of_Contacts];
+    uint8_t Number_of_Saved_Contacts;
+    unsigned long Water_Flow;
+    // unsigned long Initial_Water_Flow;
+    int Water_per_Pulse;
 
+}Device_Info_Types;
+
+*/
 void setup() 
 {
     Serial.begin(9600);
@@ -126,9 +141,15 @@ void setup()
     //SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
     SIM.begin(9600);
     delay(1000);
+    /*
+    Device_Info_Types devinfo;
 
-    
-    //Serial.write ("Will read Message");
+    devinfo.Contacts[0] = "01624593436";
+    devinfo.ID = "1234567890";
+    devinfo.Password = "1234";
+    devinfo.Water_per_Pulse = 100;
+    devinfo.Water_Flow = 12345;
+
 
     pinMode(wire_cut_detect_pin, OUTPUT);
 
@@ -139,28 +160,31 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
     // attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
 
-    delay(1000);
-    
-    Blink_LED(1, 0);
 
-    Pro_Mini.Device_Info.Manufacturing = true;
-    Pro_Mini.Device_Info.Configuration = true;
-    Pro_Mini.Update_EEPROM();
-    Pro_Mini.Get_EEPROM();
-    Serial.println(Pro_Mini.Device_Info.Manufacturing);
-    Serial.println(Pro_Mini.Device_Info.Configuration);
+    EEPROM.get(0, devinfo2);
 
-    while (Pro_Mini.Device_Info.Manufacturing)
-    {
-        if(Get_ID_Pass())
-        {
-            Pro_Mini.Device_Info.Manufacturing = false;
-            Pro_Mini.Update_EEPROM();
-            break;
-        }
-    }
+    Serial.println(devinfo2.Contacts[0]);
+    Serial.println(devinfo2.ID);
+    Serial.println(devinfo2.Password);
+    Serial.println(devinfo2.Water_per_Pulse);
+    Serial.println(devinfo2.Water_Flow);
+
+*/
     
-    Blink_LED(5, 150);
+//     //Serial.write ("Will read Message");
+
+//     pinMode(reed_switch_pin, INPUT_PULLUP);
+//     pinMode(wire_cut_detect_pin, INPUT);
+//     pinMode(reed_switch_pin, INPUT_PULLUP);
+//     pinMode(indicator_LED, OUTPUT);
+
+//     attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
+//     attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
+
+//     delay(1000);
+    
+//     Blink_LED(1, 0);
+
 
     while (Pro_Mini.Device_Info.Configuration)
     {
@@ -196,28 +220,18 @@ void setup()
     Blink_LED(5, 100);
     
     // Pro_Mini.put_ID("2020150001");
+
     // String id = Pro_Mini.ID;
     // Serial.println(id);
     Pro_Mini.Get_EEPROM();
     Pro_Mini.show_ID();
 
-    //Pro_Mini.put_Water_per_Pulse(100);
+    Pro_Mini.put_Water_per_Pulse(100);
     Pro_Mini.show_Water_per_Pulse();
 
     Pro_Mini.show_All_Contacts();
+    Pro_Mini.replace_Contact("01689294634");
 
-    Serial.println();
-    Serial.println(Pro_Mini.Device_Info.Contacts[0]);
-
-    if(Pro_Mini.check_Contact("01324593436"))
-    {
-        Serial.println("Contact Available");
-    }
-    else
-    {
-        Serial.println("Contact not available");
-    }
-    
 
 }
 
