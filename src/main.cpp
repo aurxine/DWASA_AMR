@@ -189,18 +189,18 @@ void setup()
     while (Pro_Mini.Device_Info.Configuration)
     {
         Pro_Mini.Get_EEPROM();
-        Serial.println(Pro_Mini.Device_Info.Number_of_Saved_Contacts);
+        // Serial.println(Pro_Mini.Device_Info.Number_of_Saved_Contacts);
         Serial.println(Pro_Mini.Device_Info.Water_Flow);
         Serial.println(Pro_Mini.Device_Info.Water_per_Pulse);
-        if(Pro_Mini.Device_Info.Number_of_Saved_Contacts > 0)
-        {
-            if(Pro_Mini.Device_Info.Water_Flow > 0 && Pro_Mini.Device_Info.Water_per_Pulse > 0)
-            {
-                Pro_Mini.Device_Info.Configuration = false;
-                Pro_Mini.Update_EEPROM();
-                break;
-            }
-        }
+        // if(Pro_Mini.Device_Info.Number_of_Saved_Contacts > 0)
+        // {
+        //     if(Pro_Mini.Device_Info.Water_Flow > 0 && Pro_Mini.Device_Info.Water_per_Pulse > 0)
+        //     {
+        //         Pro_Mini.Device_Info.Configuration = false;
+        //         Pro_Mini.Update_EEPROM();
+        //         break;
+        //     }
+        // }
 
         Blink_LED(1, 100);
         Serial.println("Waiting for configuration");
@@ -239,7 +239,7 @@ void loop()
 {
     if(is_wire_cut)
     {
-        SIM.SendMessage("Sensor wire is cut!", Pro_Mini.Device_Info.Contacts[0]);
+        // SIM.SendMessage("Sensor wire is cut!", Pro_Mini.Device_Info.Contacts[0]);
         is_wire_cut = false;
     }
 
