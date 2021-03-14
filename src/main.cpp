@@ -2,6 +2,7 @@
 #include<EEPROM.h>
 #include<SoftwareSerial.h>
 #include"Device_Control.h"
+#include"GSM.h"
 //#include"Device_Control.cpp"
 // this pin will be attached to the reed switch pin
 #define reed_switch_pin 2 
@@ -20,8 +21,8 @@
 #define reset_pin 3
 
 
-SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
-
+// SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
+GSM SIM(8,9);
 Device_Control Pro_Mini;
 
 // this variable will count the meter pulses
@@ -64,9 +65,9 @@ void reset()
 void setup() 
 {
     Serial.begin(9600);
-    SIM800L.begin(9600);
+    SIM.begin(9600);
 
-    SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
+    // SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
     delay(1000);
     //Serial.write ("Will read Message");
 
@@ -116,6 +117,7 @@ void setup()
 void loop() 
 {
     // bool was_wire_cut = detect_wire_cut();
-    // delay(500);
+    SIM.getNetwork();
+    delay(1000);
     // Serial.println(counter);
 }

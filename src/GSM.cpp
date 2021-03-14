@@ -7,6 +7,26 @@ GSM::GSM(uint8_t rx, uint8_t tx): SIM800L(rx, tx)
     Tx_Pin = tx;
 }
 
+void GSM::begin(int braud)
+{
+    SIM800L.begin(braud);
+    SIM800L.println("AT+CNMI=2,2,0,0,0"); // AT Command to receive a live SMS
+    
+}
+
+void GSM::getNetwork()
+{
+    SIM800L.print("AT+CSQ\r");
+
+    String text = "";
+
+    if(SIM800L.available())
+    {
+        text += SIM800L.readString();
+    }
+    Serial.println(text);
+}
+
 void GSM::SendMessage(String message, String number)
 {
     unsigned int len = number.length() + 1;
