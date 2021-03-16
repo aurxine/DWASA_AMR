@@ -33,6 +33,7 @@ SString Message;
 // when a certain amount of water passes, the meter will send a pulse through reed switch
 unsigned long int counter = 0;
 
+unsigned long startMillis, currentMillis;
 
 // Changing end line
 void Pulse_Counter()
@@ -213,12 +214,25 @@ void setup()
 
     Pro_Mini.show_All_Contacts();
     Pro_Mini.replace_Contact("01689294634");
-
+    startMillis = millis();
+    
 
 }
 
 void loop() 
 {
+    currentMillis = millis();
+    Serial.println(currentMillis);
+    delay(250);
+    if (currentMillis - startMillis >= 2500)  //test whether the period has elapsed
+    {
+        Serial.println("Reset");
+        delay(1000);
+        Reset_Pro_mini();  //if so, restart the promini
+        startMillis = currentMillis;  //IMPORTANT to save the start time of the current 
+    }
+    
+    /*
     if(is_wire_cut)
     {
         // SIM.SendMessage("Sensor wire is cut!", Pro_Mini.Device_Info.Contacts[0]);
@@ -239,4 +253,5 @@ void loop()
     Serial.println(counter);
     Pro_Mini.Update_EEPROM();
     delay(500);
+    */
 }
