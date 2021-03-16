@@ -145,7 +145,7 @@ void setup()
 
     SIM.begin(9600);
     delay(1000);
-
+    
     pinMode(wire_cut_detect_pin, INPUT_PULLUP);
     pinMode(reed_switch_pin, INPUT_PULLUP);
     pinMode(indicator_LED, OUTPUT);
@@ -226,8 +226,11 @@ void loop()
     delay(250);
     if (currentMillis - startMillis >= 2500)  //test whether the period has elapsed
     {
-        Serial.println("Reset");
+        Serial.println("Resetting");
+        Reset_GSM();
         delay(1000);
+
+        Serial.println("Resetting finished");
         Reset_Pro_mini();  //if so, restart the promini
         startMillis = currentMillis;  //IMPORTANT to save the start time of the current 
     }
@@ -241,13 +244,13 @@ void loop()
 
     Message = SIM.ReceiveMessage();
 
-    if(Message.text.length() > 1)
-    {
-        String response = Pro_Mini.Execute_Command(Message.text, Message.number);
+     = Pro_Mini.Execute_Command(Message.text, Message.number);
         Serial.println(response);
         delay(1000);
         SIM.SendMessage(response, Message.number);
-    }
+    }if(Message.text.length() > 1)
+    {
+        String response
 
     Serial.print("Count: ");
     Serial.println(counter);
