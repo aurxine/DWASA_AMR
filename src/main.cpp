@@ -7,7 +7,10 @@
 // this pin will be attached to the reed switch pin
 #define pro_mini_restart_pin 12 // used to reset or restart the pro mini
 #define gsm_restart_pin 6 // used to restart GSM module
-#define reed_switch_pin 2 
+float pro_mini_restart_period = 12;
+float gsm_restart_period = 12;
+
+#define sensor_pin 2 
 
 //ms before interrupt is detected again
 // used to debounce
@@ -23,7 +26,8 @@ bool is_wire_cut = false;
 // This will be used for indication of different states
 #define indicator_LED 7
 
-
+unsigned long int start_time = millis();
+float hour = 0;
 //SoftwareSerial SIM800L(8, 9); // new (Rx, Tx) of pro mini
 GSM SIM(8,9);
 Device_Control Pro_Mini;
@@ -63,12 +67,20 @@ void reset()
     // counter and total water will be reseted
 }
 
-void Reset_Pro_mini()
+float Hours_Passed()
+{
+    // Serial.print("Seconds: ");
+    // Serial.println((millis() - start_time)/1000.0);
+    hour = (millis() - start_time)/3600000.0;
+    return hour;
+}
+
+void Restart_Pro_mini()
 {
     digitalWrite(pro_mini_restart_pin, LOW);
 }
 
-void Reset_GSM()
+void Restart_GSM()
 {
     digitalWrite(gsm_restart_pin, LOW);
     delay(100);
@@ -146,21 +158,21 @@ void setup()
     delay(1000);
 
     pinMode(wire_cut_detect_pin, INPUT_PULLUP);
-    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(sensor_pin, INPUT_PULLUP);
     pinMode(indicator_LED, OUTPUT);
 
-    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(sensor_pin), Pulse_Counter, FALLING);
     attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
 
     
     //Serial.write ("Will read Message");
 
-    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(sensor_pin, INPUT_PULLUP);
     pinMode(wire_cut_detect_pin, INPUT);
-    pinMode(reed_switch_pin, INPUT_PULLUP);
+    pinMode(sensor_pin, INPUT_PULLUP);
     pinMode(indicator_LED, OUTPUT);
 
-    attachInterrupt(digitalPinToInterrupt(reed_switch_pin), Pulse_Counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(sensor_pin), Pulse_Counter, FALLING);
     attachInterrupt(digitalPinToInterrupt(wire_cut_detect_pin), Detect_Wire_Cut, CHANGE);
 
     delay(1000);
@@ -168,36 +180,36 @@ void setup()
     Blink_LED(1, 0);
 
 
-    while (Pro_Mini.Device_Info.Configuration)
-    {
-        Pro_Mini.Get_EEPROM();
-        // Serial.println(Pro_Mini.Device_Info.Number_of_Saved_Contacts);
-        Serial.println(Pro_Mini.Device_Info.Water_Flow);
-        Serial.println(Pro_Mini.Device_Info.Water_per_Pulse);
-        // if(Pro_Mini.Device_Info.Number_of_Saved_Contacts > 0)
-        // {
-        //     if(Pro_Mini.Device_Info.Water_Flow > 0 && Pro_Mini.Device_Info.Water_per_Pulse > 0)
-        //     {
-        //         Pro_Mini.Device_Info.Configuration = false;
-        //         Pro_Mini.Update_EEPROM();
-        //         break;
-        //     }
-        // }
+    // while (Pro_Mini.Device_Info.Configuration)
+    // {
+    //     Pro_Mini.Get_EEPROM();
+    //     // Serial.println(Pro_Mini.Device_Info.Number_of_Saved_Contacts);
+    //     Serial.println(Pro_Mini.Device_Info.Water_Flow);
+    //     Serial.println(Pro_Mini.Device_Info.Water_per_Pulse);
+    //     // if(Pro_Mini.Device_Info.Number_of_Saved_Contacts > 0)
+    //     // {
+    //     //     if(Pro_Mini.Device_Info.Water_Flow > 0 && Pro_Mini.Device_Info.Water_per_Pulse > 0)
+    //     //     {
+    //     //         Pro_Mini.Device_Info.Configuration = false;
+    //     //         Pro_Mini.Update_EEPROM();
+    //     //         break;
+    //     //     }
+    //     // }
 
-        Blink_LED(1, 100);
-        Serial.println("Waiting for configuration");
-        Message = SIM.ReceiveMessage();
-        Serial.println(Message.text);
-        if(Message.text.length() > 1)
-        {
-            String response = Pro_Mini.Execute_Command(Message.text, Message.number);
-            Serial.println(response);
-            delay(1000);
-            SIM.SendMessage(response, Message.number);
-        }
-        delay(1000);
-        // stays here till control numbers are set
-    }
+    //     Blink_LED(1, 100);
+    //     Serial.println("Waiting for configuration");
+    //     Message = SIM.ReceiveMessage();
+    //     Serial.println(Message.text);
+    //     if(Message.text.length() > 1)
+    //     {
+    //         String response = Pro_Mini.Execute_Command(Message.text, Message.number);
+    //         Serial.println(response);
+    //         delay(1000);
+    //         SIM.SendMessage(response, Message.number);
+    //     }
+    //     delay(1000);
+    //     // stays here till control numbers are set
+    // }
     
     Blink_LED(5, 100);
     
@@ -205,14 +217,14 @@ void setup()
 
     // String id = Pro_Mini.ID;
     // Serial.println(id);
-    Pro_Mini.Get_EEPROM();
-    Pro_Mini.show_ID();
+    // Pro_Mini.Get_EEPROM();
+    // Pro_Mini.show_ID();
 
-    Pro_Mini.put_Water_per_Pulse(100);
-    Pro_Mini.show_Water_per_Pulse();
+    // Pro_Mini.put_Water_per_Pulse(100);
+    // Pro_Mini.show_Water_per_Pulse();
 
-    Pro_Mini.show_All_Contacts();
-    Pro_Mini.replace_Contact("01689294634");
+    // Pro_Mini.show_All_Contacts();
+    // Pro_Mini.replace_Contact("01689294634");
 
 
 }
@@ -239,4 +251,17 @@ void loop()
     Serial.println(counter);
     Pro_Mini.Update_EEPROM();
     delay(500);
+
+    Serial.print("Hours: ");
+    Serial.println(Hours_Passed());
+
+    if(Hours_Passed() >= pro_mini_restart_period)
+    {
+        Restart_Pro_mini();
+    }
+
+    if(Hours_Passed() >= gsm_restart_period)
+    {
+        Restart_GSM();
+    }
 }
